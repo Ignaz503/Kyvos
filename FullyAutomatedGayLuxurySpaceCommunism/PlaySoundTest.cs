@@ -23,17 +23,13 @@ namespace FullyAutomatedGayLuxurySpaceCommunism
 
             Debug.Assert(app.HasComponent<ISoundEngine>(), "No sound engine found");
             
-            engine = app.GetComponent<ISoundEngine>();
+            engine = app.GetComponent<ISoundEngine>()!;
 
             shot = new((AssetIdentifier)"simple_shot.wav");
             playKey = k;
         }
         public void Dispose()
-        {
-            shot = null;
-            world = null;
-            engine = null;
-        }
+        {}
 
         public void Update(float state)
         {
