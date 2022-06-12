@@ -1,10 +1,7 @@
 # Kyvos
 
-<<<<<<< HEAD
-=======
 ## VIEW ON DEVELOP BRANCH
 
->>>>>>> main
 A C# based game engine, very much in it's infancy like pre-pre-alpha infancy
 
 ## What's in it?
