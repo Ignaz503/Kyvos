@@ -2,27 +2,52 @@
 
   <PropertyGroup>
     <OutputType>Library</OutputType>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
+	  <LangVersion>10</LangVersion>
     <ApplicationIcon />
     <StartupObject />
+    <Nullable>annotations</Nullable>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DefineConstants>VALVESOCKETS_SPAN</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DefineConstants>VALVESOCKETS_SPAN</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DefaultEcs" Version="0.16.1" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.2.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="6.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="OptimizedPriorityQueue" Version="5.1.0" />
     <PackageReference Include="Veldrid" Version="4.8.0" />
     <PackageReference Include="Veldrid.ImageSharp" Version="4.8.0" />
     <PackageReference Include="Veldrid.SPIRV" Version="1.0.14" />
     <PackageReference Include="Veldrid.StartupUtilities" Version="4.8.0" />
     <PackageReference Include="Veldrid.Utilities" Version="4.8.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Kyvos.Audio\Kyvos.Audio.csproj" />
+    <ProjectReference Include="..\Kyvos.Core\Kyvos.Core.csproj" />
+    <ProjectReference Include="..\Kyvos.ECS\Kyvos.ECS.csproj" />
+    <ProjectReference Include="..\Kyvos.GameStates\Kyvos.GameStates.csproj" />
+    <ProjectReference Include="..\Kyvos.Graphics\Kyvos.Graphics.csproj" />
+    <ProjectReference Include="..\Kyvos.Input\Kyvos.Input.csproj" />
+    <ProjectReference Include="..\Kyvos.Maths\Kyvos.Maths.csproj" />
+    <ProjectReference Include="..\Kyvos.Networking\Kyvos.Networking.csproj" />
+    <ProjectReference Include="..\Kyvos.Utility\Kyvos.Utility.csproj" />
+    <ProjectReference Include="..\Kyvos.Veldrid\Kyvos.VeldridIntegration.csproj" />
   </ItemGroup>
 
 </Project>

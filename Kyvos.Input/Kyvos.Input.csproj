@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Kyvos.Core\Kyvos.Core.csproj" />
+    <ProjectReference Include="..\Kyvos.ECS\Kyvos.ECS.csproj" />
+    <ProjectReference Include="..\Kyvos.Veldrid\Kyvos.VeldridIntegration.csproj" />
+  </ItemGroup>
+
+</Project>

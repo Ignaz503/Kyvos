@@ -1,0 +1,35 @@
+{
+  "window": {
+    "X": 100,
+    "Y": 100,
+    "WindowWidth": 960,
+    "WindowHeight": 540,
+    "WindowInitialState": "Normal"
+    /*[Normal, FullScreen, Maximized, Minimized, BorderlessFullScreen, Hidden]*/,
+    "WindowTitle": "Test"
+  },
+  "gfx": {
+    "Options": {
+      "Debug": true,
+      "HasMainSwapchain": false,
+      "SwapchainDepthFormat": null,
+      "SyncToVerticalBlank": false,
+      "ResourceBindingModel": "Default"
+      /*[Default, Improved]*/,
+      "PreferDepthRangeZeroToOne": true,
+      "PreferStandardClipSpaceYDirection": true,
+      "SwapchainSrgbFormat": false
+    },
+    "Backend": "Vulkan"
+    /*[Direct3D11, Vulkan, OpenGL, Metal, OpenGLES]*/
+  },
+  "time": {
+    "Vsync": false,
+    "FixedUpdateTimingMS": 20
+  },
+  "engine_test": {
+    "Name": "MixedInputTest"
+    /*CameraMovementMeshTest, GamePadInputTest, KeyboardMouseInputTest, MixedInputTest*/
+  }
+}         
+  

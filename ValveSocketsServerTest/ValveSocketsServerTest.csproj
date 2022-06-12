@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Kyvos.Maths\Kyvos.Maths.csproj" />
+    <ProjectReference Include="..\Kyvos.Networking\Kyvos.Networking.csproj" />
+    <ProjectReference Include="..\Kyvos\Kyvos.csproj" />
+  </ItemGroup>
+
+</Project>
