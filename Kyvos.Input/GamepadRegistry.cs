@@ -18,27 +18,27 @@ internal static class GamepadRegistry
     }
 
 
-    public static void RegisterGamepad(Gamepad gamePad) 
+    public static void RegisterGamepad(int controllerIndex) 
     {
         lock (lockObj) 
         {
-            if (!registry.ContainsKey(gamePad.ControllerIndex))
+            if (!registry.ContainsKey(controllerIndex))
             {
-                registry.Add(gamePad.ControllerIndex, new());
+                registry.Add(controllerIndex, new());
             }
         }
     }
-    public static void Unregister(Gamepad gamepad) 
+    public static void Unregister(int controllerIndex) 
     {
         lock (lockObj) 
         {
-            registry.Remove(gamepad.ControllerIndex);
+            registry.Remove(controllerIndex);
         }
     }
 
-    public static IList<SDL_Event> PumpEvents(Gamepad gamepad) 
+    public static IList<SDL_Event> PumpEvents(int controllerIndex) 
     {
-        if (registry.TryGetValue(gamepad.ControllerIndex, out var list))
+        if (registry.TryGetValue(controllerIndex, out var list))
             return list;
         return FakeList<SDL_Event>.Instance;
     }

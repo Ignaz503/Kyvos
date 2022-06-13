@@ -5,7 +5,7 @@ using Kyvos.Utility.Collections;
 
 namespace Kyvos.Input;
 
-public partial class Gamepad 
+public partial struct Gamepad 
 {
     public class ComponentManager : IComponentManagementContractEstablisher
     {

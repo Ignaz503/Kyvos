@@ -5,7 +5,7 @@ using DefaultEcs.Threading;
 
 namespace Kyvos.Input;
 
-public partial class Gamepad
+public partial struct Gamepad
 {
     public class System : AComponentSystem<float, Gamepad>
     {

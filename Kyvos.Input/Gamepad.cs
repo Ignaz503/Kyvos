@@ -10,7 +10,7 @@ using Kyvos.Core;
 
 namespace Kyvos.Input;
 
-public partial class Gamepad : IDisposable
+public partial struct Gamepad : IDisposable
 {
     //TODO move events and processint to a Gamepad Registry class that
     //maps gamepad ids to respective event lists
@@ -54,7 +54,7 @@ public partial class Gamepad : IDisposable
 
         ControllerName = Marshal.PtrToStringUTF8((IntPtr)Sdl2Native.SDL_GameControllerName(controller));
 
-        GamepadRegistry.RegisterGamepad(this);
+        GamepadRegistry.RegisterGamepad(controllerIndex);
 
         IsValid = true;
     }
@@ -87,7 +87,7 @@ public partial class Gamepad : IDisposable
 
     public void Update() 
     {
-        HandleEvents(GamepadRegistry.PumpEvents(this));
+        HandleEvents(GamepadRegistry.PumpEvents(controllerIndex));
     }
 
     private void HandleEvents(IList<SDL_Event> events) 
@@ -103,9 +103,7 @@ public partial class Gamepad : IDisposable
                     var bEvent = Unsafe.As<SDL_Event, SDL_ControllerButtonEvent>(ref ev);
                     if (bEvent.which == controllerIndex)
                     {
-
                         state.Update(bEvent);
-   
                     }
                     break;
                 case SDL_EventType.ControllerAxisMotion:
@@ -136,7 +134,7 @@ public partial class Gamepad : IDisposable
 
         Log<Gamepad>.Debug("Disposing gamepad");
 
-        GamepadRegistry.Unregister(this);
+        GamepadRegistry.Unregister(controllerIndex);
         Sdl2Native.SDL_GameControllerClose(controller);
         IsValid = false;
 
