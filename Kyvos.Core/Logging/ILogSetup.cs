@@ -5,6 +5,8 @@ namespace Kyvos.Core.Logging;
 
 public interface ILogSetup
 {
+    IApplication? Application { get; init; }
+
     internal LoggerConfiguration Build();
 
     /// <summary>
@@ -28,6 +30,9 @@ public interface ILogSetup
     /// <param name="minimumLevelToShow">min level of event to be shown in log</param>
     /// <param name="outputTemplate">template for output</param>
     ILogSetup WithFileLogging(string path, LogLevel minimumLevelToShow = LogLevel.Verbose, string outputTemplate = "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}");
+
+
+    ILogSetup WithApplicationLogging(LogLevel minimumLevelToShow = LogLevel.Verbose, string outputTemplate = "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}");
 
     /// <summary>
     /// adds thread name to log event which will be displayed if in template

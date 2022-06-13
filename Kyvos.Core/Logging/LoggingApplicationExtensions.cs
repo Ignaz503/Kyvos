@@ -6,7 +6,7 @@ public static class LoggingApplicationExtensions
     {
         var manager = app.EnsureExistence(LogManager.Instance)!;
 
-        ILogSetup setupConfig = new DefaultSerilogLogSetupHandler();
+        ILogSetup setupConfig = new DefaultSerilogLogSetupHandler(app);
         setup(setupConfig);
         manager.Setup(setupConfig);
         return app;

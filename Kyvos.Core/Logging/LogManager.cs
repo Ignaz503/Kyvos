@@ -1,4 +1,5 @@
 ﻿using Serilog;
+
 namespace Kyvos.Core.Logging;
 
 public class LogManager : IDisposable
@@ -18,5 +19,3 @@ public class LogManager : IDisposable
         Serilog.Log.CloseAndFlush();
     }
 }
-
-
