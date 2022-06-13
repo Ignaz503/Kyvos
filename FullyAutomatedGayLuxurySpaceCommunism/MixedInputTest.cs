@@ -30,8 +30,12 @@ public class MixedInputTest : ConfigurableEngineTest
                     .WithWorldConfiguration(w => w.Set<MouseAndKeyboard>(new()))
                     .WithSystems(world => {
                         return new SequentialSystem<float>(
-                            new Gamepad.System(world),
-                            new MouseAndKeyboard.System(world),
+                            new MultiInputSystem(new InputSystemProvider() { 
+                                Systems = new ISystem<InputSystemContext>[] { new Gamepad.MultiInputSystem(world), new MouseAndKeyboard.MultiInputSystem(world)},
+                                Context = new InputSystemProvider.ParallelContext(new DefaultParallelRunner(Environment.ProcessorCount))
+                            } ,app),
+                            //new Gamepad.System(world),
+                            //new MouseAndKeyboard.System(world),
                             new ParallelSystem<float>(
                                         new DefaultParallelRunner(Environment.ProcessorCount),
                                         new GamepadDebugSystem(world),

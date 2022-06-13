@@ -86,13 +86,11 @@ public struct Path
         anchoring = System.IO.Path.IsPathRooted(value.AsSpan()) ? Anchoring.Absolute : Anchoring.Local;
     }
 
-
     public static explicit operator Path(string s)
         => new(s);
 
     public static implicit operator string(Path p)
         => p.value;
-
 }
 
 public abstract class FileSystemException : Exception

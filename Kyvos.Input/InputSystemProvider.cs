@@ -26,6 +26,12 @@ public struct InputSystemProvider
     {
         public IParallelRunner? ParallelRunner;
         public bool Parallel => ParallelRunner is not null;
+
+        public ParallelContext(IParallelRunner runner)
+        {
+            this.ParallelRunner = runner;
+        }
+
     }
 
 }
