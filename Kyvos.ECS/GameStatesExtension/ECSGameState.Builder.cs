@@ -10,9 +10,10 @@ using System;
 
 namespace Kyvos.ECS.GameStatesExtension;
 
+
 public partial class ECSGameState
 {
-    public class Builder : Builder<ECSGameState.Builder,ECSGameState>
+    public class Builder : Builder<Builder,ECSGameState>
     {
         IResourceManagmentOptOuts managmentOptOuts = NoMangmentOptOuts.Instance;
         WorldConfigureSystems worldConfigSystems = new();
@@ -23,6 +24,7 @@ public partial class ECSGameState
         int? entityCapacity;
         public Builder() :base()
         {
+            teardownHandler = new DefaultTeardownHandler();
         }
 
         public Builder OptOutFromManagment<TManager, TInfo, TResource>()

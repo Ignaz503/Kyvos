@@ -9,6 +9,7 @@ using System.Runtime.CompilerServices;
 using Veldrid.Utilities;
 
 namespace Kyvos.ECS.Components.Rendering;
+//TODO move to Kyvos.Graphics
 public partial struct Camera
 {
     float fov;

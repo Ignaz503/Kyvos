@@ -1,4 +1,5 @@
 ﻿using Kyvos.Core.Logging;
+using System.Diagnostics;
 using System.Reflection;
 
 namespace Kyvos.Core;
@@ -29,6 +30,7 @@ internal static class ApplicationComponent<T>
     public static T Set(T comp, IApplication app)
     {
         component = comp;
+        LogComponentRegistration(typeof(T));
         if (!isSet)
             SubscribeToAppDispose(app);
         isSet = true;
@@ -38,10 +40,19 @@ internal static class ApplicationComponent<T>
     public static ref T Set(ref T comp, IApplication app)
     {
         component = comp;
+
+        LogComponentRegistration(typeof(T));
+        
         if (!isSet)
             SubscribeToAppDispose(app);
         isSet = true;
         return ref component!;
+    }
+
+    [Conditional("DEBUG")]
+    static void LogComponentRegistration(Type t) 
+    {
+        Log<ApplicationComponent>.Debug("Registering {Component}", t.Name);
     }
 
     public static T Get()
@@ -64,7 +75,6 @@ internal static class ApplicationComponent<T>
     {
         if (component is not null && component is IDisposable) 
         {
-            Log<ApplicationComponent>.Debug("Registering component {Component} to normal dispose", component.GetType().Name);
             app.Subscribe<AppDisposedMessage>(NormalDispose);
 
             //var attrib = component.GetType().GetCustomAttribute<AppDisposeStageAttribute>();

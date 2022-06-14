@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Veldrid.ImGui" Version="5.72.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Kyvos.Core\Kyvos.Core.csproj" />
+    <ProjectReference Include="..\Kyvos.ECS\Kyvos.ECS.csproj" />
+    <ProjectReference Include="..\Kyvos.Graphics\Kyvos.Graphics.csproj" />
+    <ProjectReference Include="..\Kyvos.Input\Kyvos.Input.csproj" />
+    <ProjectReference Include="..\Kyvos.Veldrid\Kyvos.VeldridIntegration.csproj" />
+  </ItemGroup>
+
+</Project>

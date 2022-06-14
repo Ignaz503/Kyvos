@@ -28,8 +28,8 @@
     "FixedUpdateTimingMS": 20
   },
   "engine_test": {
-    "Name": "MixedInputTest"
-    /*CameraMovementMeshTest, GamePadInputTest, KeyboardMouseInputTest, MixedInputTest*/
+    "Name": "UITest"
+    /*CameraMovementMeshTest, GamePadInputTest, KeyboardMouseInputTest,UITest, MixedInputTest*/
   }
 }         
   

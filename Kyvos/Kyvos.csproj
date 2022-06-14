@@ -43,6 +43,7 @@
     <ProjectReference Include="..\Kyvos.ECS\Kyvos.ECS.csproj" />
     <ProjectReference Include="..\Kyvos.GameStates\Kyvos.GameStates.csproj" />
     <ProjectReference Include="..\Kyvos.Graphics\Kyvos.Graphics.csproj" />
+    <ProjectReference Include="..\Kyvos.ImGUI\Kyvos.ImGUI.csproj" />
     <ProjectReference Include="..\Kyvos.Input\Kyvos.Input.csproj" />
     <ProjectReference Include="..\Kyvos.Maths\Kyvos.Maths.csproj" />
     <ProjectReference Include="..\Kyvos.Networking\Kyvos.Networking.csproj" />

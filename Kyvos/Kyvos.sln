@@ -35,6 +35,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kyvos.Input", "..\Kyvos.Inp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kyvos.Graphics", "..\Kyvos.Graphics\Kyvos.Graphics.csproj", "{10415006-A9FD-4842-B5FF-690F4A052F3D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kyvos.ImGUI", "..\Kyvos.ImGUI\Kyvos.ImGUI.csproj", "{2D3EEAC6-EF8A-4099-9439-7F779E0B153B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -237,6 +239,18 @@ Global
 		{10415006-A9FD-4842-B5FF-690F4A052F3D}.Release|x64.Build.0 = Release|Any CPU
 		{10415006-A9FD-4842-B5FF-690F4A052F3D}.Release|x86.ActiveCfg = Release|Any CPU
 		{10415006-A9FD-4842-B5FF-690F4A052F3D}.Release|x86.Build.0 = Release|Any CPU
+		{2D3EEAC6-EF8A-4099-9439-7F779E0B153B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D3EEAC6-EF8A-4099-9439-7F779E0B153B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D3EEAC6-EF8A-4099-9439-7F779E0B153B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{2D3EEAC6-EF8A-4099-9439-7F779E0B153B}.Debug|x64.Build.0 = Debug|Any CPU
+		{2D3EEAC6-EF8A-4099-9439-7F779E0B153B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2D3EEAC6-EF8A-4099-9439-7F779E0B153B}.Debug|x86.Build.0 = Debug|Any CPU
+		{2D3EEAC6-EF8A-4099-9439-7F779E0B153B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D3EEAC6-EF8A-4099-9439-7F779E0B153B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2D3EEAC6-EF8A-4099-9439-7F779E0B153B}.Release|x64.ActiveCfg = Release|Any CPU
+		{2D3EEAC6-EF8A-4099-9439-7F779E0B153B}.Release|x64.Build.0 = Release|Any CPU
+		{2D3EEAC6-EF8A-4099-9439-7F779E0B153B}.Release|x86.ActiveCfg = Release|Any CPU
+		{2D3EEAC6-EF8A-4099-9439-7F779E0B153B}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,4 +1,5 @@
-﻿using NAudio.Wave;
+﻿using Kyvos.Core.Logging;
+using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
 
 namespace Kyvos.Audio;
@@ -56,6 +57,8 @@ internal class DefaultSoundEngine : ISoundEngine
     {
         if (isDisposed)
             return;
+
+        Log<ISoundEngine>.Information("Disposing Audio Engine");
 
         output.Dispose();
 

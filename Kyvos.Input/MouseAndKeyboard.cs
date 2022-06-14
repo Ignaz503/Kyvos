@@ -6,9 +6,11 @@ using Veldrid;
 namespace Kyvos.Input;
 
 
-public partial struct MouseAndKeyboard
+public partial struct MouseAndKeyboard : InputSnapshot //only for imgui integration this feels very stupid
 {
     KeyboardState state;
+
+    InputSnapshot? _snapshot;
 
     float scrollWheelDelta;
     public float ScrollWheelDelta => scrollWheelDelta;
@@ -19,12 +21,21 @@ public partial struct MouseAndKeyboard
     Vector2 mouseDelta;
     public Vector2 MouseDelta => mouseDelta;
 
+    public IReadOnlyList<KeyEvent> KeyEvents => _snapshot?.KeyEvents ?? Array.Empty<KeyEvent>();
+
+    public IReadOnlyList<MouseEvent> MouseEvents => _snapshot?.MouseEvents ?? Array.Empty<MouseEvent>();
+
+    public IReadOnlyList<char> KeyCharPresses => _snapshot?.KeyCharPresses ?? Array.Empty<char>();
+
+    public float WheelDelta => scrollWheelDelta;
+
     public MouseAndKeyboard()
     {
         state = KeyboardState.Default;
         scrollWheelDelta = 0;
         mousePosition = Vector2.Zero;
         mouseDelta = Vector2.Zero;
+        _snapshot = null;
     }
 
     /// <summary>
@@ -65,6 +76,8 @@ public partial struct MouseAndKeyboard
 
         state.Advance();
 
+        _snapshot = snapshot;
+
         mouseDelta = window.MouseDelta;
 
         var keyEvents = snapshot.KeyEvents;
@@ -87,6 +100,9 @@ public partial struct MouseAndKeyboard
         }
 
     }
+
+    public bool IsMouseDown(Veldrid.MouseButton button)
+        => IsPressed((MouseButton)button);
 
 }
 

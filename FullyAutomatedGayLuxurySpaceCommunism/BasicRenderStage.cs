@@ -1,14 +1,10 @@
 ﻿using DefaultEcs;
-using Veldrid;
 using DefaultEcs.System;
-using Kyvos.GameStates;
-using Kyvos.Core;
-using System;
-using Kyvos.Graphics.Materials;
 using Kyvos.ECS.Components;
-using Kyvos.ECS.Systems.Rendering;
-using System.Linq;
 using Kyvos.ECS.Components.Rendering;
+using Kyvos.ECS.Systems.Rendering;
+using Kyvos.Graphics.Materials;
+using Veldrid;
 
 namespace FullyAutomatedGayLuxurySpaceCommunism
 {
