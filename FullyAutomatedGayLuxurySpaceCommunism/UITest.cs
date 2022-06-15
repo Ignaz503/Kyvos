@@ -16,6 +16,7 @@ using Kyvos.VeldridIntegration;
 using Kyvos.ECS.Components.Rendering;
 using Kyvos.Core.Configuration;
 using Kyvos.ImGUI;
+using DefaultEcs;
 
 namespace FullyAutomatedGayLuxurySpaceCommunism;
 
@@ -40,7 +41,9 @@ public class UITest : ConfigurableEngineTest
                 stateBuilder.UseNewWorld()
                             .WithWorldConfiguration(w => {
                                 w.Set<MouseAndKeyboard>(new());
-                                UIBlueprint.AddUI(new MyUI(),w);
+                                w.Set<MessageBoard>(new(messagesShownForSeconds:20f));
+                                w.Set<LogToMessageBoardForwarder>(new(w));
+                                UIBlueprint.AddUI(new MyUI(w),w);
                             })
                             //without call would use world of state that is below on stack
                             .WithEntitySetup(commands => {
@@ -67,12 +70,13 @@ public class UITest : ConfigurableEngineTest
                                     new SimpleMoveSystem(w),
                                     new CameraMoveSystem(w),
                                     new PlaySoundTest(w),
-                                    UIBlueprint.GetSystem(w),
+                                    new MessageBoard.System(w),
+                                    UIBlueprint.GetSystem(w), //this systems informas imgui on what to show
                                     new ParallelSystem<float>(
                                         new DefaultParallelRunner(Environment.ProcessorCount),
                                         new FPSMeassureSystem(w),
                                         new RenderSystem(false, w,
-                                        new RenderSystemProvider(new BasicRenderStage(w), new UIRenderSystem(w)),
+                                        new RenderSystemProvider(new BasicRenderStage(w), new UIRenderSystem(w)),//this UI render system actually renderes it
                                         new RenderSystemProvider(new CameraBufferUpdateSystem(w)))
                                         )
                                     );

@@ -5,6 +5,7 @@ using Kyvos.Audio;
 using Kyvos.Core.Assets;
 using Kyvos.Core;
 using System.Diagnostics;
+using Kyvos.Core.Logging;
 
 namespace FullyAutomatedGayLuxurySpaceCommunism
 {
@@ -37,6 +38,7 @@ namespace FullyAutomatedGayLuxurySpaceCommunism
             if (input.IsDown(playKey)) 
             {
                 engine.Play(shot);
+                Log.Information("Played sound simple_shot.wav");
             }
         }
     }

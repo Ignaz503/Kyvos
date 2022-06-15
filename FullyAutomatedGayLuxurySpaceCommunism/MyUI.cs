@@ -1,6 +1,7 @@
 ﻿using Kyvos.Maths;
 using Kyvos.ImGUI;
 using Kyvos.Core.Logging;
+using DefaultEcs;
 
 namespace FullyAutomatedGayLuxurySpaceCommunism;
 
@@ -10,8 +11,9 @@ public class MyUI : IUIComponent
     const int max = 5;
     
     MainMenuBar bar;
+    MessageBoard? messageBoard;
 
-    public MyUI()
+    public MyUI(World w)
     {
         bar = new MainMenuBar();
 
@@ -24,11 +26,16 @@ public class MyUI : IUIComponent
 
         int GetRandomNumberBetweenMinAnMax()
             => Mathf.RoundToInt(Kyvos.Maths.Mathf.Map(Kyvos.Maths.Random.Value, 0, 1, min, max));
+
+        if(w.Has<MessageBoard>())
+            messageBoard = w.Get<MessageBoard>();
+
     }
 
     public void Show()
     {
         bar.Show();
+        messageBoard?.Show();
     }
 
     Menu SomeMenu(int idx, int items) 

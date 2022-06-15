@@ -71,7 +71,8 @@ public static class DefaultGUIApplication
         app.WithLogging(logSetup =>
         {
             logSetup.WithConsoleLogging(outputTemplate: Templates.ThreadNameAndSourceContextMessage)
-                .WithDebugLogging(outputTemplate: Templates.ThreadNameAndSourceContextMessage)
+                //.WithDebugLogging(outputTemplate: Templates.ThreadNameAndSourceContextMessage)
+                .WithApplicationLogging(outputTemplate: Templates.ThreadNameAndSourceContextMessage)
 #if DEBUG
                 .WithMinimumLevel(LogLevel.Verbose)
 #endif
