@@ -11,10 +11,11 @@ namespace Kyvos.ImGUI;
 public class MessageBoard : UILeafNode
 {
     RoundRobinArray<Message> messages;
-    
+    object lockObj;
     public MessageBoard(int maxMessagesAtOnce = 10, float messagesShownForSeconds = 10f)
     {
         messages = new RoundRobinArray<Message>(maxMessagesAtOnce, new MessageInitializer(messagesShownForSeconds));
+        lockObj = new();
     }
 
     public override bool Equals(IUINode? other)
@@ -34,15 +35,25 @@ public class MessageBoard : UILeafNode
 
     void Update(float deltaTime)
     {
-        foreach (var message in messages)
-            message.Update(deltaTime);
+        for (int i = 0; i < messages.Size; i++)
+        {
+            ref var msg = ref messages.GetRef(i);
+            msg.Update(deltaTime);
+        }
     }
 
     public void AddMessage(string message)
     {
-        messages[messages.Head].Text.Content = message;
-        messages[messages.Head].ResetTimer();
-        messages.AdvanceHead();
+        lock (lockObj) 
+        {
+            ref var msg = ref messages.GetRef(messages.Head);
+            msg.Text.Content = message;
+            msg.ResetTimer();
+            messages.AdvanceHead();
+            //messages[messages.Head].Text.Content = message;
+            //messages[messages.Head].ResetTimer();
+            //messages.AdvanceHead();
+        }
     }
 
     struct MessageInitializer : IArrayInitializer<Message>
@@ -59,7 +70,7 @@ public class MessageBoard : UILeafNode
         }
     }
 
-    class Message 
+    struct Message 
     {
         public ColoredText Text;
         
@@ -84,7 +95,7 @@ public class MessageBoard : UILeafNode
         {
             time += deltaTime;
 
-            var alpha = Tween.EaseInCubic(1f-(time / maxTime));
+            var alpha = Tween.EaseOutQuint(1f-(time / maxTime));
 
             Text.Color = Vector4.One * alpha;
 
@@ -124,4 +135,15 @@ public class MessageBoard : UILeafNode
         }
     }
 
+}
+
+public class Image : UILeafNode
+{
+    public override bool Equals(IUINode? other)
+        => this == other;
+
+    public override void Show()
+    {
+        throw new NotImplementedException();
+    }
 }

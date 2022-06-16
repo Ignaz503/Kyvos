@@ -22,6 +22,10 @@ public class RoundRobinArray<T> : IEnumerable<T>, IList<T>
 
     public T this[int index] { get => data[index % size]; set => data[index % size] = value; }
 
+    public ref T GetRef(int index) 
+        => ref data[index % size];
+
+
     int head;
     public int Head => head;
 

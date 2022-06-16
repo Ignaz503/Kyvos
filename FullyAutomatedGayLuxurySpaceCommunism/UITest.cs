@@ -41,7 +41,7 @@ public class UITest : ConfigurableEngineTest
                 stateBuilder.UseNewWorld()
                             .WithWorldConfiguration(w => {
                                 w.Set<MouseAndKeyboard>(new());
-                                w.Set<MessageBoard>(new(messagesShownForSeconds:20f));
+                                w.Set<MessageBoard>(new(messagesShownForSeconds:10f));
                                 w.Set<LogToMessageBoardForwarder>(new(w));
                                 UIBlueprint.AddUI(new MyUI(w),w);
                             })

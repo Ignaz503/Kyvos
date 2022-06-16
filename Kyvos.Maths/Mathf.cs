@@ -45,5 +45,12 @@ public static class Mathf
         float range = max - min;
         return range * r.NextSingle() + min;
     }
+
+    public static float Clamp01(float val)
+    {
+        return val < 0f ? 0f
+            : val > 1f ? 1f
+            : val;
+    }
 }
 

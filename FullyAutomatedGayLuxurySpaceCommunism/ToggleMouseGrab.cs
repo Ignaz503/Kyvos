@@ -24,7 +24,7 @@ namespace FullyAutomatedGayLuxurySpaceCommunism
             this.toggleKey = toggleKey;
             this.world = world;
             Debug.Assert(world.Get<IApplication>().HasComponent<Window>(), "Window component is missing");
-            window = world.Get<IApplication>().GetComponent<Window>();
+            window = world.Get<IApplication>().GetComponent<Window>()!;
             window.RealtiveMouseMode(isGrabbed);
         }
 
