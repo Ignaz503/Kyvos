@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Kyvos.Assets\Kyvos.Assets.csproj" />
     <ProjectReference Include="..\Kyvos.Veldrid\Kyvos.VeldridIntegration.csproj" />
   </ItemGroup>
 

@@ -19,7 +19,14 @@ public partial class Material
 
         public ResourceLayoutElementDescription LayoutElementDescription => new(Name,Kind,Stages,Options);
 
-        public abstract Property Get(GraphicsDevice gfxDevice);
+        public abstract Property Get(CreationContext ctx);
+
+    }
+
+    public readonly struct CreationContext 
+    {
+        public GraphicsDevice GfxDevice { get; init; }
+        public TextureLoader TextureLoader { get; init; }
 
     }
 }

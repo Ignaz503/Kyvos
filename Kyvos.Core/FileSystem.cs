@@ -1,5 +1,4 @@
-﻿using Kyvos.Core.Assets;
-using System;
+﻿using System;
 using System.IO;
 using System.Runtime.Serialization;
 
@@ -26,23 +25,16 @@ public static class FileSystem
     public static string MakeAbsolute(string localPath, StorageLocation location = StorageLocation.Assets)
         => System.IO.Path.Combine(GetPathFromLocation(location), localPath);
 
-    public static string GetPathToAsset(AssetIdentifier identifier)
-        => System.IO.Path.Combine(Assets, identifier);
-
 
     static string GetPathFromLocation(StorageLocation location)
     {
-        switch (location)
+        return location switch
         {
-            case StorageLocation.Assets:
-                return Assets;
-            case StorageLocation.InstallFolder:
-                return InstallLocation;
-            case StorageLocation.LocalAppData:
-                return AppData;
-            default:
-                throw new UnknownStorageLocation(location);
-        }
+            StorageLocation.Assets => Assets,
+            StorageLocation.InstallFolder => InstallLocation,
+            StorageLocation.LocalAppData => AppData,
+            _ => throw new UnknownStorageLocation(location),
+        };
     }
 
 }
@@ -64,6 +56,8 @@ public struct Path
     }
 
     string value;
+    public string Value => value;
+
     Anchoring anchoring;
     public bool IsLocal => anchoring == Anchoring.Local;
     public bool IsAbsolute => anchoring == Anchoring.Absolute;
@@ -89,8 +83,14 @@ public struct Path
     public static explicit operator Path(string s)
         => new(s);
 
-    public static implicit operator string(Path p)
+    public static explicit operator string(Path p)
         => p.value;
+
+    public static explicit operator ReadOnlySpan<char>(Path p)
+        => p.value.AsSpan();
+    
+    public static explicit operator Path(ReadOnlySpan<char> p)
+        => new(new string(p));
 }
 
 public abstract class FileSystemException : Exception

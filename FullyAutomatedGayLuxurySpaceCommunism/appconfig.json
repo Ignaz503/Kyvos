@@ -30,6 +30,7 @@
   "engine_test": {
     "Name": "UITest"
     /*CameraMovementMeshTest, GamePadInputTest, KeyboardMouseInputTest,UITest, MixedInputTest*/
-  }
+  },
+  "asset_database": "assetDB.ini"
 }         
   

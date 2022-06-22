@@ -6,6 +6,9 @@ using Kyvos.Graphics;
 using System.Text;
 using Kyvos.Graphics.Materials;
 using Kyvos.ECS.Resources;
+using Kyvos.Core;
+using Kyvos.VeldridIntegration;
+using System.Diagnostics;
 
 namespace FullyAutomatedGayLuxurySpaceCommunism
 {
@@ -13,7 +16,7 @@ namespace FullyAutomatedGayLuxurySpaceCommunism
     //TODO create material blue print that remvoes and adds materials correctly to entity
     //as in if material removed, also remove MangerResource<TInfo,Material> and if 
     //ManagedResource<TInfo,Material> remvoed also remove material
-    public class MaterialManager : GraphicsResourceManager<string, Material>
+    public class MaterialManager : AResourceManager<string, Material>
     {
         private const string VertexCode = @"
 #version 450
@@ -66,10 +69,21 @@ void main()
     fsout_Color = fsin_Color * col;
 }";
 
+        MaterialLoader materialLoader;
+        GraphicsDeviceHandle gfxDeviceHandle;
 
-        public MaterialManager(GraphicsDevice gD) : base(gD)
-        { }
 
+        public MaterialManager(IApplication app)
+        {
+            gfxDeviceHandle = GetComponentFromApp<GraphicsDeviceHandle>(app);
+            materialLoader = GetComponentFromApp<MaterialLoader>(app);
+        }
+
+        T GetComponentFromApp<T>(IApplication app)
+        {
+            Debug.Assert(app.HasComponent<T>());
+            return app.GetComponent<T>()!;
+        }
 
         protected override Material Load(string info)
         {
@@ -80,7 +94,7 @@ void main()
 
             var materialDescription = new MaterialDescription()
             {
-                Name = "basic color vert",
+                Name = new("basic color vert"),
                 ShaderSetDescription = new ShaderProgramDescription()
                 {
                     VertexShaderDescription = new() { EntryPoint = "main", ShaderStages = ShaderStages.Vertex, Code = new() { StorageIdentifier = ShaderCode.StorageType.Code, Data = VertexCode } },
@@ -106,10 +120,10 @@ void main()
                         new Material.ColorBufferDescription(){ Order = 0, Name = "ColorBuffer", ColorType = Material.ColorBufferDescription.ColorLength.Vec4, Color = new(1f,1f,1f,1), Kind = ResourceKind.UniformBuffer, Stages = ShaderStages.Fragment}
                     )
                 },
-                OutputDescription = gfxDevice.SwapchainFramebuffer.OutputDescription
+                OutputDescription = gfxDeviceHandle.GfxDevice.SwapchainFramebuffer.OutputDescription
             };
 
-            var mat = Material.Manager.Get(materialDescription, gfxDevice);
+            var mat = materialLoader.Get(materialDescription);
             return mat;
         }
 

@@ -29,17 +29,17 @@ public partial class Material
         ReferenceCounter refCounter;
         ResourceSet? resourceSet;
 
-        private PropertySet(PropertySetDescription descripton, GraphicsDevice gfxDevie)
+        private PropertySet(PropertySetDescription descripton, CreationContext ctx)
         {
             this.Type = descripton.Type;
             this.setIndex = descripton.SetIndex;
             refCounter = new();
 
 
-            properties = new(descripton.GetPropeties(gfxDevie));
+            properties = new(descripton.GetPropeties(ctx));
 
-            resourceLayout = descripton.GetResourceLayout(gfxDevie);
-            BuildResourceSet(gfxDevie);
+            resourceLayout = descripton.GetResourceLayout(ctx.GfxDevice);
+            BuildResourceSet(ctx.GfxDevice);
         }
 
         public void Use(CommandList cmdList) 

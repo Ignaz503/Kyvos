@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using Kyvos.Assets;
+using System.Collections.Generic;
 using Veldrid;
 
 namespace Kyvos.Graphics.Materials;
 
 public struct MaterialDescription
 {
-    public string Name { get; init; }
+    public AssetIdentifier Name { get; init; }
     public ShaderProgramDescription ShaderSetDescription { get; init; }
     public VertexLayoutDescription[] VertexLayouts { get; init; }
     public SpecializationConstant[] SpecializationConstants { get; init; }
@@ -16,14 +17,14 @@ public struct MaterialDescription
     public Material.PropertySetDescription[] PropertySetDescription { get; init; }
     public OutputDescription OutputDescription { get; init; }
 
-    internal Dictionary<uint, Material.PropertySet> BuildPropertieSets(GraphicsDevice gfxDevice) 
+    internal Dictionary<uint, Material.PropertySet> BuildPropertieSets(Material.CreationContext ctx ) 
     {
         if (PropertySetDescription == null)
             return new();
 
         var sets = new Dictionary<uint, Material.PropertySet>(PropertySetDescription.Length);
         foreach (var description in PropertySetDescription)
-            sets.Add(description.SetIndex, Material.PropertySet.Manager.Get(description, gfxDevice));
+            sets.Add(description.SetIndex, Material.PropertySet.Manager.Get(description, ctx));
         return sets;
     }
 

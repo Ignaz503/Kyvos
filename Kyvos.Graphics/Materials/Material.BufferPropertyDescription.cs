@@ -11,12 +11,12 @@ public partial class Material
     {
         public abstract BufferDescription BufferDescription { get; }
 
-        public abstract void InitializeBuffer(BufferProperty prop, GraphicsDevice gfxDevice);
+        public abstract void InitializeBuffer(BufferProperty prop, CreationContext ctx);
 
-        public override Property Get(GraphicsDevice gfxDevice)
+        public override Property Get(CreationContext ctx)
         {
-            var prop = new BufferProperty(BufferDescription,Order,gfxDevice);
-            InitializeBuffer(prop,gfxDevice);
+            var prop = new BufferProperty(BufferDescription,Order,ctx.GfxDevice);
+            InitializeBuffer(prop,ctx);
             return prop;
         }
     }
@@ -25,7 +25,7 @@ public partial class Material
     {
         public override BufferDescription BufferDescription => new(Size.Of_U<Matrix4x4>(), BufferUsage.UniformBuffer);
 
-        public override void InitializeBuffer(BufferProperty prop, GraphicsDevice gfxDevice)
+        public override void InitializeBuffer(BufferProperty prop, CreationContext ctx)
         {
             
         }
@@ -44,15 +44,15 @@ public partial class Material
         public override BufferDescription BufferDescription
             => new(ColorType == ColorLength.Vec3 ? Size.Of_U<Vector3>() : Size.Of_U<Vector4>(), BufferUsage.UniformBuffer);
 
-        public override void InitializeBuffer(BufferProperty prop, GraphicsDevice gfxDevice)
+        public override void InitializeBuffer(BufferProperty prop, CreationContext ctx)
         {
             switch(ColorType)
             {
                case ColorLength.Vec4:
-                    prop.Update(Color.ToVector4(), gfxDevice);
+                    prop.Update(Color.ToVector4(), ctx.GfxDevice);
                     break;
                case ColorLength.Vec3:
-                    prop.Update(Color.ToVector4().XYZ(), gfxDevice);
+                    prop.Update(Color.ToVector4().XYZ(), ctx.GfxDevice);
                     break;
             }
         }

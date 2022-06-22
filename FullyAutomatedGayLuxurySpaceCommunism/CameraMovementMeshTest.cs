@@ -15,6 +15,7 @@ using Kyvos.ECS;
 using Kyvos.VeldridIntegration;
 using Kyvos.ECS.Components.Rendering;
 using Kyvos.Core.Configuration;
+using Kyvos.Graphics;
 
 namespace FullyAutomatedGayLuxurySpaceCommunism;
 
@@ -29,9 +30,10 @@ public class CameraMovementMeshTest : ConfigurableEngineTest
 
     protected override IModifyableApplication ApplySetup(IModifyableApplication app) 
     {
-        return app.WithSoundEngine()
+        return app.WithAudio()
+            .WithKyvosGraphics()
             .WithStackCapacity(1)
-            .With<MaterialManager, string, Material>(app => new MaterialManager(app.GetComponent<GraphicsDeviceHandle>()!.GfxDevice))
+            .With<MaterialManager, string, Material>(app => new MaterialManager(app))
             .With<MeshResourceManager, string, Mesh>(app => new MeshResourceManager(app.GetComponent<GraphicsDeviceHandle>()!.GfxDevice))
             .With(Camera.ComponentManagment.Instance)
             .With("main", stateBuilder => {

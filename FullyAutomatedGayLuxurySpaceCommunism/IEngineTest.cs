@@ -5,6 +5,7 @@ using Kyvos.Graphics;
 using Kyvos;
 using Kyvos.VeldridIntegration;
 using Kyvos.Core.Configuration;
+using Kyvos.Assets;
 using System;
 
 namespace FullyAutomatedGayLuxurySpaceCommunism;
@@ -44,7 +45,7 @@ public interface IEngineTest
                     }
                 },
                 new Timer.Config() { FixedUpdateTimingMS = 20f }
-            );
+            ).WithAssetDatabase();
     }
 
     public static IModifyableApplication DefaultAppSetup(IConfig config, string? name = "") 
@@ -54,7 +55,7 @@ public interface IEngineTest
         {
             app.GetComponent<Window>()!.Title = name;
         }
-        return app;
+        return app.WithAssetDatabase();
 
     }
 }

@@ -17,23 +17,21 @@ public partial class Material
         public bool UseDefaultSampler { get; init; }
         public DefaultSamplerType DefaultSampler { get; init; }
 
-        public override Property Get(GraphicsDevice gfxDevice)
+        public override Property Get(CreationContext ctx)
         {
             if (UseDefaultSampler) 
             {
                 Sampler toUse = DefaultSampler switch
                 {
-                    DefaultSamplerType.Point => gfxDevice.PointSampler,
-                    DefaultSamplerType.Linear => gfxDevice.LinearSampler,
-                    DefaultSamplerType.Aniso4x => gfxDevice.Aniso4xSampler,
+                    DefaultSamplerType.Point => ctx.GfxDevice.PointSampler,
+                    DefaultSamplerType.Linear => ctx.GfxDevice.LinearSampler,
+                    DefaultSamplerType.Aniso4x => ctx.GfxDevice.Aniso4xSampler,
                     _ => throw new System.Exception("unkown default sampler type")
                 };
                 return new SamplerProperty(toUse, Order);
             }
-            return new SamplerProperty(SamplerDescription, Order,gfxDevice);
+            return new SamplerProperty(SamplerDescription, Order, ctx.GfxDevice);
         }
     }
-
-
 }
 

@@ -61,7 +61,7 @@ public static class EngineTestRegistry
 
     static IEngineTest Activate(Type test, IConfig config)
     {
-        var activtor = System.Activator.CreateInstance(test, new object[] { config });
+        var activtor = Activator.CreateInstance(test, new object[] { config });
         return (activtor as IEngineTest) ?? throw new Exception("Failed to start engine test");
     }
 

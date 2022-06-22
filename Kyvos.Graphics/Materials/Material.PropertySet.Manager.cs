@@ -18,12 +18,12 @@ public partial class Material
                 OnGlobalSetDisposed += OnSetDisposed;
             }
 
-            public static PropertySet Get(PropertySetDescription description, GraphicsDevice gfxDevice) 
+            public static PropertySet Get(PropertySetDescription description, CreationContext ctx) 
             {
                 if (globals.TryGetValue(description.SetIndex, out PropertySet? set)) 
                     return set.Reference();
 
-                var newSet = new PropertySet(description,gfxDevice);
+                var newSet = new PropertySet(description,ctx);
                 if (newSet.Type == Ownership.Global) 
                 {
                     newSet.Reference();

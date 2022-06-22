@@ -5,26 +5,27 @@ using Veldrid;
 using Kyvos.Utility;
 using Kyvos.VeldridIntegration;
 using Kyvos.Core.Logging;
+using Kyvos.Assets;
 
 namespace Kyvos.Graphics.Materials;
 
 public partial class Material : IDisposable
 {
-    private static event Action<Material>? OnDispose;
+    internal static event Action<AssetIdentifier>? OnNoReference;
 
-    private string name;
+    internal AssetIdentifier Name;
     Dictionary<uint,PropertySet> propertySets;
     Pipeline piplineStateObject;
     ReferenceCounter refCounter;
 
-    bool isDisposed = false;
+    bool isCleanedUp = false;
 
-    private Material(MaterialDescription description, GraphicsDevice gfxDevice)
+    internal Material(MaterialDescription description, CreationContext ctx)
     {
-        refCounter = new ReferenceCounter();
-        name = description.Name;
-
-        propertySets = description.BuildPropertieSets(gfxDevice);
+        refCounter = new ReferenceCounter(0);
+        Name = description.Name;
+        var gfxDevice = ctx.GfxDevice;
+        propertySets = description.BuildPropertieSets(ctx);
 
         var shaderSet = new Veldrid.ShaderSetDescription(
             description.VertexLayouts,
@@ -47,7 +48,7 @@ public partial class Material : IDisposable
     {
 #if DEBUG
         if (!propertySets.ContainsKey(idx))
-            throw new NonExistentPropertySetIdx(name, idx);
+            throw new NonExistentPropertySetIdx(Name, idx);
 #endif
         return propertySets[idx];
     }
@@ -118,33 +119,31 @@ public partial class Material : IDisposable
     {
         FindSetForProperty(propertyName).Update(propertyName, sampler, gfxDevice);
     }
-    Material Reference()
+    internal Material Reference()
     {
         refCounter.Increment();
         return this;
     }
 
-    public void Dispose()
+    internal void DisposeInternal()
     {
-        if (isDisposed)
+        if (isCleanedUp)
             return;
 
-        if (refCounter.Decrement() == 1)
-        {
-            //only material manager still references
-            refCounter.Decrement();
-            OnDispose?.Invoke(this);
-        }
-
-        if (refCounter.Count > 0)
-            return;
-
-        Log<Material>.Debug("Disposing material {Name}", name);
+        Log<Material>.Debug("Disposing material {Name}", Name);
 
         foreach (var set in propertySets.Values)
             set.Dispose();
         piplineStateObject.Dispose();
 
-        isDisposed = true;
+        isCleanedUp = true;
+    }
+
+    public void Dispose()
+    {
+        var c = refCounter.Decrement();
+        if (c > 0)
+            return;
+        OnNoReference?.Invoke(Name);
     }
 }

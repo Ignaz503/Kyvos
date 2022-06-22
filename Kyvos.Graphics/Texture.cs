@@ -9,11 +9,14 @@ using SixLabors.ImageSharp;
 using Veldrid.Utilities;
 using Veldrid.SPIRV;
 using System.Numerics;
+using Kyvos.Assets;
 
 namespace Kyvos.Graphics;
 
 public class Texture : IDisposable
 {
+    internal static event Action<AssetIdentifier>? OnNoReference;
+
     public enum DeviceTextureCreation
     {
         Staging,
@@ -25,31 +28,33 @@ public class Texture : IDisposable
     //TODO don't use imagesharp texture and make your own thing
     ImageSharpTexture? data;
     Veldrid.Texture? deviceTexture;
+    AssetIdentifier assetId;
     ReferenceCounter refCounter;
     bool isDisposed = false;
 
-    private Texture() 
+    private Texture(AssetIdentifier id) 
     {
+        this.assetId = id;
         deviceTexture = null;
         refCounter = new();
     }
 
-    public Texture(string path) :this()
+    public Texture(AssetIdentifier id, string path) :this(id)
         => data = new ImageSharpTexture(path);
     
-    public Texture(string path, bool mipmap) : this()
+    public Texture(AssetIdentifier id, string path, bool mipmap) : this(id)
         => data = new ImageSharpTexture(path, mipmap);
     
-    public Texture(string path, bool mipmap, bool srgb) : this()
+    public Texture(AssetIdentifier id, string path, bool mipmap, bool srgb) : this(id)
         => data = new ImageSharpTexture(path, mipmap, srgb);
     
-    public Texture(Stream stream) : this()
+    public Texture(AssetIdentifier id, Stream stream) : this(id)
         => data = new ImageSharpTexture(stream);
     
-    public Texture(Stream stream, bool mipmap) : this()
+    public Texture(AssetIdentifier id, Stream stream, bool mipmap) : this(id)
        => data = new ImageSharpTexture(stream, mipmap);
     
-    public Texture(Stream stream, bool mipmap, bool srgb) : this()
+    public Texture(AssetIdentifier id, Stream stream, bool mipmap, bool srgb) : this(id)
         => data = new ImageSharpTexture(stream, mipmap, srgb);
 
     private void CreateDeviceTexture(GraphicsDevice gfxDevice, DeviceTextureCreation method) 
@@ -124,7 +129,14 @@ public class Texture : IDisposable
             return;
         if (deviceTexture is null)
             return;
-        
+
+        if (data.MipLevels > 1) 
+        {
+            
+            //calculate new mip levels
+            MipmapHelper.GenerateMipmaps(data.Images);
+        }
+
         for (int i = 0; i < data.MipLevels; i++)
         {
             Image<Rgba32> image = data.Images[i];
@@ -140,26 +152,21 @@ public class Texture : IDisposable
             }
         }
 
-        if (generateMipMaps) 
-        {
-            var cl = gd.ResourceFactory.CreateCommandList();
-            cl.Begin();
+        //if (generateMipMaps) 
+        //{
+        //    var cl = gd.ResourceFactory.CreateCommandList();
+        //    cl.Begin();
 
-            cl.GenerateMipmaps(deviceTexture);
-            cl.End();
-            gd.SubmitCommands(cl);
+        //    cl.GenerateMipmaps(deviceTexture);
+        //    cl.End();
+        //    gd.SubmitCommands(cl);
 
-        } 
+        //} 
     }
 
-    public void Dispose()
+    internal void DisposeInternal()
     {
         if (isDisposed)
-            return;
-
-        var cnt = refCounter.Decrement();
-
-        if (cnt != 0)
             return;
 
         deviceTexture?.Dispose();
@@ -167,4 +174,11 @@ public class Texture : IDisposable
         isDisposed = true;
     }
 
+    public void Dispose()
+    { 
+        var c = refCounter.Decrement();
+        if (c > 0)
+            return;
+        OnNoReference?.Invoke(assetId);
+    } 
 }

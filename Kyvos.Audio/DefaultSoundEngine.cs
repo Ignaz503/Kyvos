@@ -16,23 +16,26 @@ internal class DefaultSoundEngine : ISoundEngine
         this.output = new WaveOutEvent();
         mixer = new MixingSampleProvider(WaveFormat.CreateIeeeFloatWaveFormat(sampleRate, channelCount));
 
-
+        mixer.MixerInputEnded += OnMixerInputEnded;
         mixer.ReadFully = true;
         output.Init(mixer);
         output.Play();
     }
 
-    public void Play(ISampleProvider sample)
+    void OnMixerInputEnded(object? sender, SampleProviderEventArgs args) 
     {
-        AddSampleToMixer(sample);
+        if (args.SampleProvider is Sampler sampler) 
+        {
+            Log<DefaultSoundEngine>.Debug("Finisehd playing {AssetId}", sampler.Asset?.ID ?? "undefined");
+            Sampler.Return(sampler);
+        }
     }
 
-    public void Play(SoundAsset sample)
-    {
-        var sampler = new SoundAsset.Sampler(sample);
+    public void Play(ISampleProvider sample) 
+        => AddSampleToMixer(sample);
 
-        AddSampleToMixer(sampler);
-    }
+    public void Play(SoundAsset sample) 
+        => AddSampleToMixer(Sampler.Get(sample));
 
     ISampleProvider ConvertToCorrectSampleCount(ISampleProvider sample) 
     {

@@ -5,9 +5,9 @@ using Kyvos.Input;
 
 namespace Kyvos.ImGUI;
 
-public partial struct ImGuiData
+public partial struct ImGuiHandle
 {
-    public class System : AComponentSystem<float, ImGuiData>
+    public class System : AComponentSystem<float, ImGuiHandle>
     {
         public System(World world) : base(world)
         {
@@ -21,12 +21,12 @@ public partial struct ImGuiData
         {
         }
 
-        protected override void Update(float state, ref ImGuiData component)
+        protected override void Update(float state, ref ImGuiHandle component)
         {
             if (World.Has<MouseAndKeyboard>()) 
             {
                 ref var input = ref World.Get<MouseAndKeyboard>();
-                component.renderer.Update(state, input);
+                component.Update(state, input);
             }
         }
 

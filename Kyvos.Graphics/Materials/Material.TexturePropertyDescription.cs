@@ -6,14 +6,13 @@ public partial class Material
 {
     public class TexturePropertyDescription : PropertyDescription
     {
-        public string? LocalFilePath { get; init; }
+        public string? AssetID { get; init; }
 
-        public override Property Get(GraphicsDevice gfxDevice)
+        public override Property Get(CreationContext ctx)
         {
-            throw new System.NotImplementedException();
+            var texture = ctx.TextureLoader.Load(new(AssetID??""));
+            return new TextureProperty(texture,Order,ctx.GfxDevice);
         }
     }
-
-
 }
 

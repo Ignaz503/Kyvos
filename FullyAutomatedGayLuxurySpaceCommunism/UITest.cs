@@ -17,6 +17,8 @@ using Kyvos.ECS.Components.Rendering;
 using Kyvos.Core.Configuration;
 using Kyvos.ImGUI;
 using DefaultEcs;
+using Kyvos.Assets;
+using Kyvos.Graphics;
 
 namespace FullyAutomatedGayLuxurySpaceCommunism;
 
@@ -31,9 +33,10 @@ public class UITest : ConfigurableEngineTest
 
     protected override IModifyableApplication ApplySetup(IModifyableApplication app)
     {
-        return app.WithSoundEngine()
+        return app.WithAudio()
+            .WithKyvosGraphics()
             .WithStackCapacity(1)
-            .With<MaterialManager, string, Material>(app => new MaterialManager(app.GetComponent<GraphicsDeviceHandle>()!.GfxDevice))
+            .With<MaterialManager, string, Material>(app => new MaterialManager(app))
             .With<MeshResourceManager, string, Mesh>(app => new MeshResourceManager(app.GetComponent<GraphicsDeviceHandle>()!.GfxDevice))
             .With(Camera.ComponentManagment.Instance)
             .WithUIComponentManagment()

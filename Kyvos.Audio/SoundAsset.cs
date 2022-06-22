@@ -1,19 +1,29 @@
 ﻿//https://markheath.net/post/fire-and-forget-audio-playback-with
 
-using Kyvos.Core.Assets;
+using Kyvos.Assets;
 using Kyvos.Core;
+using Kyvos.Core.Logging;
+using Kyvos.Utility;
 using NAudio.Wave;
 
 namespace Kyvos.Audio;
 
-public class SoundAsset 
+public class SoundAsset : IDisposable
 {
-    float[] data;
-    WaveFormat waveFormat;
+    internal static event Action<AssetIdentifier>? OnNoReference;
 
-    public SoundAsset(AssetIdentifier identifier)
+    AssetIdentifier id;
+    public AssetIdentifier ID => id;
+    ReferenceCounter refCounter;
+    bool isCleanup = false;
+    internal float[] data;
+    internal WaveFormat waveFormat;
+
+    internal SoundAsset(AssetIdentifier identifier, string path)
     {
-        using var audioFileReader = new AudioFileReader(FileSystem.GetPathToAsset(identifier));
+        id= identifier;
+        refCounter = new(0);
+        using var audioFileReader = new AudioFileReader(path);
 
         waveFormat = audioFileReader.WaveFormat;
 
@@ -29,33 +39,24 @@ public class SoundAsset
         data = readFile.ToArray();
     }
 
-    public class Sampler : ISampleProvider
+    internal void Reference()
+        => refCounter.Increment();
+
+    internal void DisposeInternal()
     {
-        SoundAsset asset;
-        long position;
-        public Sampler(SoundAsset asset)
-        {
-            this.asset = asset;
-            position = 0;
-        }
+        if (isCleanup)
+            return;
 
-        public Sampler(SoundAsset asset, long position)
-        {
-            this.asset = asset;
-            this.position = position;
-        }
+        Log<SoundAsset>.Debug("unloading {Id}", id);
 
-        public WaveFormat WaveFormat => asset.waveFormat;
-
-        public int Read(float[] buffer, int offset, int count)
-        {
-            var amountToCopy = Math.Min(count, asset.data.Length-position); //don't try to copy more than is actually left in the audio file from this position
-
-            Array.Copy(asset.data, position,buffer, offset, amountToCopy);
-
-            position += amountToCopy;
-            return (int)amountToCopy;
-        }
+        isCleanup = true;
     }
 
+    public void Dispose()
+    {
+        var c = refCounter.Decrement();
+        if (c > 0)
+            return;
+        OnNoReference?.Invoke(id);
+    }
 }

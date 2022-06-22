@@ -8,7 +8,7 @@ namespace Kyvos.ImGUI;
 public static class UIApplicationExtensions
 {
     public static IModifyableApplication WithUIComponentManagment(this IModifyableApplication app)
-     => app.With(ImGuiData.ComponentManager.Instance);
+     => app.With(ImGuiHandle.ComponentManager.Instance);
 
 
 }

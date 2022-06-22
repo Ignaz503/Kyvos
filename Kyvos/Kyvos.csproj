@@ -38,6 +38,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Kyvos.Assets\Kyvos.Assets.csproj" />
     <ProjectReference Include="..\Kyvos.Audio\Kyvos.Audio.csproj" />
     <ProjectReference Include="..\Kyvos.Core\Kyvos.Core.csproj" />
     <ProjectReference Include="..\Kyvos.ECS\Kyvos.ECS.csproj" />

@@ -52,11 +52,12 @@ public partial class Material
             return descriptions;
         }
 
-        public IEnumerable<KeyValuePair<string, Property>> GetPropeties(GraphicsDevice gfxDevice) 
+        public IEnumerable<KeyValuePair<string, Property>> GetPropeties(CreationContext ctx) 
         {
             foreach (var propDescription in properties) 
             {
-                yield return new KeyValuePair<string, Property>(propDescription.Name ?? string.Empty,propDescription.Get(gfxDevice));
+                var property = propDescription.Get(ctx);
+                yield return new KeyValuePair<string, Property>(propDescription.Name ?? string.Empty,property);
             }
         }
 

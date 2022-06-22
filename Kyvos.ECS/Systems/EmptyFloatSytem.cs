@@ -18,7 +18,6 @@ public class EmptyFloatSytem : ISystem<float>
     }
 }
 
-
 //public class SystemDesignerTets
 //{
 //    public void Test()

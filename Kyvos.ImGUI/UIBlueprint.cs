@@ -11,8 +11,8 @@ public class UIBlueprint
     public static void AddUI(IUIComponent component, World world)
     {
         Debug.Assert(world.Get<IApplication>() != null, "Application must be set");
-        world.SetMaxCapacity<ImGuiData>(1);
-        world.Set<ImGuiData>(new(world.Get<IApplication>()));
+        world.SetMaxCapacity<ImGuiHandle>(1);
+        world.Set<ImGuiHandle>(new(world.Get<IApplication>()));
 
         world.SetMaxCapacity<UITree>(1);
         world.Set(new UITree(component));
@@ -21,14 +21,14 @@ public class UIBlueprint
     public static ISystem<float> GetSystem(World w) 
     {
         return new SequentialSystem<float>(
-            new ImGuiData.System(w),
+            new ImGuiHandle.System(w),
             new UITree.System(w)
             );
     }
     public static ISystem<float> GetSystem(World w, IParallelRunner runner)
     {
         return new SequentialSystem<float>(
-            new ImGuiData.System(w, runner),
+            new ImGuiHandle.System(w, runner),
             new UITree.System(w, runner)
             );
     }
@@ -37,7 +37,7 @@ public class UIBlueprint
     public static ISystem<float> GetSystem(World w, IParallelRunner runner, int minComponentCountByRunnerIndex)
     {
         return new SequentialSystem<float>(
-            new ImGuiData.System(w, runner, minComponentCountByRunnerIndex),
+            new ImGuiHandle.System(w, runner, minComponentCountByRunnerIndex),
             new UITree.System(w, runner, minComponentCountByRunnerIndex)
             );
     }

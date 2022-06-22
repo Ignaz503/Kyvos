@@ -6,7 +6,7 @@ namespace Kyvos.Audio;
 
 public static class SoundApplicationExtensions
 {
-    public static IModifyableApplication With(this IModifyableApplication app, ISoundEngine soundEngine)
+    public static IModifyableApplication WithSoundEngine(this IModifyableApplication app, ISoundEngine soundEngine)
     {
         app.AddComponent(soundEngine);
         return app;
@@ -17,4 +17,22 @@ public static class SoundApplicationExtensions
         app.EnsureExistence<ISoundEngine>(new DefaultSoundEngine());
         return app;
     }
+
+    public static IModifyableApplication WithSoundLoader(this IModifyableApplication app) 
+    {
+        app.EnsureExistence<ISoundLoader>(new SoundLoader(app));
+        return app;
+    }
+    public static IModifyableApplication WithSoundLoader(this IModifyableApplication app, ISoundLoader loader)
+    {
+        app.EnsureExistence<ISoundLoader>(loader);
+        return app;
+    }
+
+    public static IModifyableApplication WithAudio(this IModifyableApplication app) 
+        => app.WithSoundEngine().WithSoundLoader();
+
+    public static IModifyableApplication WithAudio(this IModifyableApplication app, ISoundEngine engine, ISoundLoader soundLoader)
+    => app.WithSoundEngine(engine).WithSoundLoader(soundLoader);
+
 }
