@@ -10,7 +10,7 @@ public partial class Material
 
         public override Property Get(CreationContext ctx)
         {
-            var texture = ctx.TextureLoader.Load(new(AssetID??""));
+            var texture = ctx.TextureLoader.Load(new(AssetID??""),true);
             return new TextureProperty(texture,Order,ctx.GfxDevice);
         }
     }

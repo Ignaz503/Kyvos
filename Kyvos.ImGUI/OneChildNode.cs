@@ -2,6 +2,7 @@
 
 public abstract class OneChildNode : IUINode
 {
+    bool isDisposed = false;
     protected IUINode? Child { get; set; }
 
     public void AppendChild(IUINode node)
@@ -34,4 +35,12 @@ public abstract class OneChildNode : IUINode
     public abstract void Show();
 
     public abstract bool Equals(IUINode? other);
+
+    public virtual void Dispose()
+    {
+        if(isDisposed)
+            return;
+        Child?.Dispose();
+        isDisposed = true;
+    }
 }

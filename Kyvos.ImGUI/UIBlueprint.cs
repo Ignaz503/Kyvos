@@ -6,13 +6,20 @@ using System.Diagnostics;
 
 namespace Kyvos.ImGUI;
 
+public interface ISetupableUI : IUIComponent 
+{
+    public void Setup(ref ImGuiHandle handle);
+}
+
 public class UIBlueprint 
 {
-    public static void AddUI(IUIComponent component, World world)
+    public static void AddUI(ISetupableUI component, World world)
     {
         Debug.Assert(world.Get<IApplication>() != null, "Application must be set");
         world.SetMaxCapacity<ImGuiHandle>(1);
         world.Set<ImGuiHandle>(new(world.Get<IApplication>()));
+
+        component.Setup(ref world.Get<ImGuiHandle>());
 
         world.SetMaxCapacity<UITree>(1);
         world.Set(new UITree(component));

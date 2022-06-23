@@ -6,9 +6,9 @@ namespace Kyvos.ImGUI;
 
 public struct UITree 
 {
-    IUIComponent root;
+    ISetupableUI root;
 
-    public UITree(IUIComponent root)
+    public UITree(ISetupableUI root)
     {
         this.root = root;
     }

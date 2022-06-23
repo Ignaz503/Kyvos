@@ -4,6 +4,7 @@ namespace Kyvos.ImGUI;
 
 public abstract class FixedChildSizeUINode : IUINode
 {
+    bool isDisposed = false;
     protected IUINode?[] Children { get; set; }
     int childIndexer = 0;
 
@@ -54,4 +55,15 @@ public abstract class FixedChildSizeUINode : IUINode
     public abstract void Show();
 
     public abstract bool Equals(IUINode? other);
+
+    public virtual void Dispose()
+    {
+        if (isDisposed)
+            return;
+
+        foreach (var elem in Children)
+            elem?.Dispose();
+
+        isDisposed = true;
+    }
 }

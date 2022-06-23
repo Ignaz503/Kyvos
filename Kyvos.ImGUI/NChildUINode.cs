@@ -1,10 +1,11 @@
 ﻿namespace Kyvos.ImGUI;
 
-public abstract class NChildUINode : IUINode
+public abstract class VariableChildUINode : IUINode
 {
+    bool isDisposed = false;
     protected List<IUINode> children;
 
-    public NChildUINode()
+    public VariableChildUINode()
     {
         children = new();
     }
@@ -15,7 +16,17 @@ public abstract class NChildUINode : IUINode
 
     public void AppendChildAt(IUINode node, int idx)
         => children.Insert(idx, node);
-    
+
+    public virtual void Dispose()
+    {
+        if (isDisposed)
+            return;
+
+        foreach (var elem in children)
+            elem.Dispose();
+
+        isDisposed = true;
+    }
 
     public abstract bool Equals(IUINode? other);
 

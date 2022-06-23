@@ -2,7 +2,7 @@
 
 namespace Kyvos.ImGUI;
 
-public sealed class MainMenuBar : NChildUINode
+public sealed class MainMenuBar : VariableChildUINode
 {
     public override bool Equals(IUINode? other)
     {

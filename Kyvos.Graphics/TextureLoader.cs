@@ -20,9 +20,9 @@ public class TextureLoader : IDisposable
         Texture.OnNoReference += OnNoReferenceLeft;
     }
 
-    public Texture Load(AssetIdentifier id) 
+    public Texture Load(AssetIdentifier id, bool mipmap=true)
     {
-        return assetsLoaded.GetOrAdd(id, (_id) => new Texture(_id, assetDatabase.GetPathToAsset(id)));
+        return assetsLoaded.GetOrAdd(id, (_id) => new Texture(_id, assetDatabase.GetPathToAsset(id),mipmap));
     }
 
 

@@ -56,6 +56,9 @@ public class MessageBoard : UILeafNode
         }
     }
 
+    public override void Dispose()
+    {}
+
     struct MessageInitializer : IArrayInitializer<Message>
     {
         float maxTime;
@@ -135,15 +138,4 @@ public class MessageBoard : UILeafNode
         }
     }
 
-}
-
-public class Image : UILeafNode
-{
-    public override bool Equals(IUINode? other)
-        => this == other;
-
-    public override void Show()
-    {
-        throw new NotImplementedException();
-    }
 }

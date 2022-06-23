@@ -19,6 +19,9 @@ public class Text : UILeafNode
     {
         ImGui.Text(Content);
     }
+
+    public override void Dispose()
+    {}
 }
 
 public class ColoredText : UILeafNode 
@@ -56,4 +59,7 @@ public class ColoredText : UILeafNode
     {
         ImGui.TextColored(Color,Content);
     }
+
+    public override void Dispose()
+    {}
 }

@@ -14,13 +14,13 @@ public static class SoundApplicationExtensions
 
     public static IModifyableApplication WithSoundEngine(this IModifyableApplication app)
     {
-        app.EnsureExistence<ISoundEngine>(new DefaultSoundEngine());
+        app.EnsureExistence<ISoundEngine>((application)=>new DefaultSoundEngine());
         return app;
     }
 
     public static IModifyableApplication WithSoundLoader(this IModifyableApplication app) 
     {
-        app.EnsureExistence<ISoundLoader>(new SoundLoader(app));
+        app.EnsureExistence<ISoundLoader>((application)=>new SoundLoader(application));
         return app;
     }
     public static IModifyableApplication WithSoundLoader(this IModifyableApplication app, ISoundLoader loader)

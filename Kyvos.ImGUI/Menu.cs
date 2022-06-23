@@ -2,7 +2,7 @@
 
 namespace Kyvos.ImGUI;
 
-public sealed class Menu : NChildUINode
+public sealed class Menu : VariableChildUINode
 {
     public string Label { get; set; }
     public Menu(string label):base()

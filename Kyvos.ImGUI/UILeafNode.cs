@@ -8,6 +8,8 @@ public abstract class UILeafNode : IUINode
     public void AppendChildAt(IUINode node, int idx)
     {}
 
+    public abstract void Dispose();
+
     public abstract bool Equals(IUINode? other);
 
     public int IdxOfChild(IUINode node)

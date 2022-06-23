@@ -24,4 +24,7 @@ public class Button : UILeafNode
         if (ImGui.Button(Label))
             callback();
     }
+
+    public override void Dispose()
+    {}
 }

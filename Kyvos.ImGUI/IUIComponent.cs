@@ -1,6 +1,6 @@
 ﻿namespace Kyvos.ImGUI;
 
-public interface IUIComponent 
+public interface IUIComponent : IDisposable
 {
     void Show();
 }

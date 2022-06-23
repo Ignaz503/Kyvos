@@ -60,4 +60,7 @@ public sealed class MenuItem : UILeafNode
             callback();
         }
     }
+
+    public override void Dispose()
+    { }
 }
