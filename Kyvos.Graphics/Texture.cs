@@ -29,6 +29,9 @@ public class Texture : IDisposable
     //TODO don't use imagesharp texture and make your own thing
     ImageSharpTexture data;
     Veldrid.Texture? deviceTexture;
+
+    public Veldrid.Texture Native
+        => deviceTexture ?? throw new InvalidOperationException("Call CreateDeviceTexture first!");
     AssetIdentifier assetId;
     ReferenceCounter refCounter;
     bool isDisposed = false;
@@ -65,28 +68,37 @@ public class Texture : IDisposable
     public Texture(AssetIdentifier id, Stream stream, bool mipmap, bool srgb) : this(id)
         => data = new ImageSharpTexture(stream, mipmap, srgb);
 
-    private void CreateDeviceTexture(GraphicsDevice gfxDevice, DeviceTextureCreation method) 
+    public void CreateDeviceTexture(GraphicsDevice gfxDevice, DeviceTextureCreation method = DeviceTextureCreation.Update) 
     {
-        //TODO create yourself and don't call create device texture but actually use staging or update
-        switch (method) 
+        lock(_lockObject)
         {
-            case DeviceTextureCreation.Staging:
-                //TODO this also uses update
-                deviceTexture = data.CreateDeviceTexture(gfxDevice, gfxDevice.ResourceFactory);
-                break;
-            case DeviceTextureCreation.Update:
-                deviceTexture = data.CreateDeviceTexture(gfxDevice, gfxDevice.ResourceFactory);
-                break;
+            if (deviceTexture is not null)
+                return;
+
+            //TODO create yourself and don't call create device texture but actually use staging or update
+            switch (method)
+            {
+                case DeviceTextureCreation.Staging:
+                    //TODO this also uses update
+                    deviceTexture = data.CreateDeviceTexture(gfxDevice, gfxDevice.ResourceFactory);
+                    break;
+                case DeviceTextureCreation.Update:
+                    deviceTexture = data.CreateDeviceTexture(gfxDevice, gfxDevice.ResourceFactory);
+                    break;
+            }
         }
+
+
+        Log<Texture>.Debug("W: {Width} H:{Height} Mips: {Mip}", deviceTexture!.Width, deviceTexture.Height, deviceTexture.MipLevels);
+        Log<Texture>.Debug("Format: {Form} Usage: {Usg} Layers: {ArrayLayers}", deviceTexture.Format, deviceTexture.Usage, deviceTexture.ArrayLayers);
+
     }
 
     public TextureView GetTextureView(GraphicsDevice gfxDevice) 
     {
-        lock (_lockObject) 
-        {
-            if (deviceTexture is null)
-                CreateDeviceTexture(gfxDevice, CreationMethod);
-        }
+        if (deviceTexture is null)
+            CreateDeviceTexture(gfxDevice, CreationMethod);
+
         refCounter.Increment();
         return gfxDevice.ResourceFactory.CreateTextureView(deviceTexture);
     }

@@ -92,7 +92,7 @@ public class Image : UILeafNode
 
     public override void Show()
     {
-        ImGui.Image(binding, Size , UV, UV1,TintColor, BorderColor);
+        ImGui.Image(binding, Size, UV, UV1,TintColor, BorderColor);
         
     }
 

@@ -34,7 +34,7 @@ public class MyUI : ISetupableUI
         if(w.Has<MessageBoard>())
             messageBoard = w.Get<MessageBoard>();
 
-        imageGroup = new() { Name = "Image" };
+        imageGroup = new() { Name = "Image", Flags=ImGuiNET.ImGuiWindowFlags.AlwaysAutoResize};
 
     }
 
