@@ -3,12 +3,14 @@ using DefaultEcs.System;
 using Kyvos.Input;
 using System.Numerics;
 using Kyvos.ECS.Components;
+using Kyvos.ECS.Components.Rendering;
 
 namespace FullyAutomatedGayLuxurySpaceCommunism
 {
     [With(typeof(Transform))]
     public class SimpleMoveSystem : AEntitySetSystem<float>
     {
+        Key Key { get; set; } = Key.R;
         float acc;
         public SimpleMoveSystem(World world) : base(world)
         {
@@ -35,7 +37,8 @@ namespace FullyAutomatedGayLuxurySpaceCommunism
             ref var trans = ref entity.Get<Transform>();
             trans.Position += dir * deltaTime;
 
-            trans.Rotation = Quaternion.CreateFromAxisAngle(Vector3.UnitY, (acc += deltaTime)) * Quaternion.CreateFromAxisAngle(Vector3.UnitX, (acc += deltaTime));
+            if(input.IsPressed(Key))
+                trans.Rotation = Quaternion.CreateFromAxisAngle(Vector3.UnitY, (acc += deltaTime)) * Quaternion.CreateFromAxisAngle(Vector3.UnitX, (acc += deltaTime));
 
         }
     }

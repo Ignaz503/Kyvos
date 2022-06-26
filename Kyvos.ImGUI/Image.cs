@@ -18,7 +18,7 @@ public class Image : UILeafNode
     readonly Veldrid.TextureView view;
 
     Vector2 size;
-    public Vector2 Size { get => size; set => SetSizeConstrained(ref size, value); }
+    public Vector2 Size { get => size; set => size = value; }
 
     public Vector2 UV { get; set; }
     public Vector2 UV1 { get; set; }
@@ -56,8 +56,8 @@ public class Image : UILeafNode
 
         var gfxDevice = handle.GfxDeviceHandle.GfxDevice;
         view = image.GetTextureView(gfxDevice);
+        
         binding = handle.GetOrCreateImGuiBinding(gfxDevice.ResourceFactory, view);
-        Log<Image>.Debug("binding is intptr zero: {val}", binding == IntPtr.Zero);
         Log<Image>.Debug("size: {Size}", Size);
 
         UV = Vector2.Zero;
@@ -70,21 +70,6 @@ public class Image : UILeafNode
     {
         Debug.Assert(application.HasComponent<T>(), $"{nameof(Image)} requires {nameof(T)} to function");
         return application.GetComponent<T>()!;
-    }
-
-    private void SetSizeConstrained(ref Vector2 size, Vector2 value)
-    {
-        if (value.X < 0 || value.Y < 0) 
-        {
-            Log<Image>.Debug("Size values can't be smaller than 0. Actual: {Value}", value);
-            return;
-        }
-        if (value.X > image.Width || value.Y > image.Height) 
-        {
-            Log<Image>.Debug("Size values can't be biger than ({W},{H}). Actual: {Value}",image.Width,image.Height,value);
-            return;
-        }
-        size = value;
     }
 
     public override bool Equals(IUINode? other)

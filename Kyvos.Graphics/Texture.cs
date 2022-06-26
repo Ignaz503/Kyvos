@@ -52,10 +52,12 @@ public class Texture : IDisposable
 
     public Texture(AssetIdentifier id, string path) :this(id)
         => data = new ImageSharpTexture(path);
-    
+
     public Texture(AssetIdentifier id, string path, bool mipmap) : this(id)
-        => data = new ImageSharpTexture(path, mipmap);
-    
+    {
+        data = new ImageSharpTexture(path, mipmap);
+    }
+
     public Texture(AssetIdentifier id, string path, bool mipmap, bool srgb) : this(id)
         => data = new ImageSharpTexture(path, mipmap, srgb);
     

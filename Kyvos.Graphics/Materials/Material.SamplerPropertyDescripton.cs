@@ -8,13 +8,14 @@ public partial class Material
     {
         public enum DefaultSamplerType
         {
+            No,
             Linear,
             Point,
             Aniso4x
         }
 
         public SamplerDescription SamplerDescription { get; init; }
-        public bool UseDefaultSampler { get; init; }
+        public bool UseDefaultSampler => DefaultSampler != DefaultSamplerType.No;
         public DefaultSamplerType DefaultSampler { get; init; }
 
         public override Property Get(CreationContext ctx)

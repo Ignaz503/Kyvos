@@ -24,7 +24,7 @@ public struct ShaderCode
     public enum StorageType
     {
         FileIdentifier,
-        Code
+        EmbeddedCode
     }
     public StorageType StorageIdentifier { get; init; }
     public string Data { get; init; }
@@ -35,7 +35,7 @@ public struct ShaderCode
         return StorageIdentifier switch
         {
             StorageType.FileIdentifier => LoadFromFile(),
-            StorageType.Code => Encoding.UTF8.GetBytes(Data),
+            StorageType.EmbeddedCode => Encoding.UTF8.GetBytes(Data),
             _ => throw new UnknownShaderCodeType()
         };
     }

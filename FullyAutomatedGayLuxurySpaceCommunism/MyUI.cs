@@ -41,7 +41,9 @@ public class MyUI : ISetupableUI
 
     public void Setup(ref ImGuiHandle handle)
     {
-        imageGroup.AppendChild(new Image(new("avatar"), handle));
+        var image = new Image(new(TemporaryConsts.TextureToUse), handle);
+        //image.Size *= 10;
+        imageGroup.AppendChild(image) ;
     }
 
     public void Show()

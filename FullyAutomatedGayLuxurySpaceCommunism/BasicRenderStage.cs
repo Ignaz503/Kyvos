@@ -1,5 +1,6 @@
 ﻿using DefaultEcs;
 using DefaultEcs.System;
+using Kyvos.Core.Logging;
 using Kyvos.ECS.Components;
 using Kyvos.ECS.Components.Rendering;
 using Kyvos.ECS.Systems.Rendering;
@@ -22,8 +23,9 @@ namespace FullyAutomatedGayLuxurySpaceCommunism
 
         protected override void PreUpdate(RenderContext ctx)
         {
+            //TODO move this call to render system and always set the active frame buffer there
             ctx.CmdList.SetFramebuffer(ctx.GfxDevice.SwapchainFramebuffer);
-            ctx.CmdList.ClearColorTarget(0, RgbaFloat.Grey);
+            //ctx.CmdList.ClearColorTarget(0, RgbaFloat.Grey);
 
         }
 
@@ -32,7 +34,7 @@ namespace FullyAutomatedGayLuxurySpaceCommunism
             ref var mesh = ref entity.Get<Mesh>();
             var mat = entity.Get<Material>();
             ref var transform = ref entity.Get<Transform>();
-            ref var cam = ref World.Get<Camera>();
+            //ref var cam = ref World.Get<Camera>();
             //var app = World.Get<IApplication>();
 
             mat.Update(0, "WorldBuffer", transform.Matrix, ctx.CmdList);

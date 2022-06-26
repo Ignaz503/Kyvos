@@ -149,5 +149,3 @@ public class RenderSystem : ISystem<float>, IDisposable
         => new() { World = world, GfxDevice = gfxDevice, DeltaTime = deltaTime, CmdList = cmdList };
 
 }
-
-
