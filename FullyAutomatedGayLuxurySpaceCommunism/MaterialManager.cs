@@ -132,7 +132,7 @@ void main()
 
         Material LoadTextureMat() 
         {
-            
+
             var materialDescription = new MaterialDescription()
             {
                 Name = new("basic texture mat"),
@@ -164,7 +164,8 @@ void main()
                             Order = 0,
                             AssetID = new(TemporaryConsts.TextureToUse),
                             Stages=ShaderStages.Fragment,
-                            Kind=ResourceKind.TextureReadOnly
+                            Kind=ResourceKind.TextureReadOnly,
+                            MipMap = false
                         },
                         new Material.SamplerPropertyDescripton()
                         {

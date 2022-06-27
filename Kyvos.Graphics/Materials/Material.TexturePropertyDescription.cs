@@ -8,9 +8,12 @@ public partial class Material
     {
         public string? AssetID { get; init; }
 
+        public bool MipMap { get; init; }
+
         public override Property Get(CreationContext ctx)
         {
-            var texture = ctx.TextureLoader.Load(new(AssetID??""),true);
+            //TODO default texture fallback
+            var texture = ctx.TextureLoader.Load(new(AssetID??""),MipMap);
             return new TextureProperty(texture,Order,ctx.GfxDevice);
         }
     }
