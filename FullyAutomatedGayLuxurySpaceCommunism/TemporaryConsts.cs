@@ -2,5 +2,5 @@
 
 public class TemporaryConsts 
 {
-    public const string TextureToUse = "stripes1024"; 
+    public const string TextureToUse = "bricks"; 
 }

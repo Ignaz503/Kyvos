@@ -61,7 +61,7 @@ public static class ImageSharpExtensions
     {
         var image = texture.Images[0];
 
-        if (!image.TryGetSinglePixelSpan(out var pixelSpan))
+        if (!image.DangerousTryGetSinglePixelMemory(out var pixelSpan))
         {
             throw new TextureUpdateException("Can only modify textures stored contigously in memory.");
         }
@@ -72,7 +72,7 @@ public static class ImageSharpExtensions
             throw new TextureUpdateException($"Can't copy more pixels than the texture has x:{x} y:{y} length:{start + pixels.Length} allowed:{pixelSpan.Length - start}");
         }
 
-        pixels.CopyTo(pixelSpan[start..]);
+        pixels.CopyTo(pixelSpan.Span[start..]);
     }
 
     public static unsafe void SetPixels(this ImageSharpTexture texture, Span<float> pixels, int x = 0, int y = 0)

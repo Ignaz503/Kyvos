@@ -20,3 +20,11 @@ public abstract class TextureException : Exception
     {
     }
 }
+
+public class NonContigousPixelMemoryException : TextureException 
+{
+    public NonContigousPixelMemoryException():base("Pixels not loaded in contigous memory")
+    {
+
+    }
+}
