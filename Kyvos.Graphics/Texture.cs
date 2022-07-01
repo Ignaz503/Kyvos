@@ -28,11 +28,11 @@ public class Texture : IDisposable
 
 
     
-    public static DeviceTextureCreation CreationMethod = DeviceTextureCreation.Staging;
+    public static DeviceTextureCreation CreationMethod = DeviceTextureCreation.Update;
 
     //TODO don't use imagesharp texture and make your own thing
     //ImageSharpTexture data;
-    TextureData data;
+    TextureData2D data;
     Veldrid.Texture? deviceTexture;
 
     public Veldrid.Texture Native
@@ -43,7 +43,8 @@ public class Texture : IDisposable
     object _lockObject;
 
     public uint Width => (uint)data.Width;
-    public uint Height => (uint)data.Height ;
+    public uint Height => (uint)data.Height;
+
 
 #pragma warning disable CS8618       //data will alsways be set by public ctors
     private Texture(AssetIdentifier id) 
@@ -84,7 +85,7 @@ public class Texture : IDisposable
             if (deviceTexture is not null)
                 return;
 
-            deviceTexture = data.CreateDeviceTexture(gfxDevice,TextureUsage.Sampled,method);
+            deviceTexture = data.CreateDeviceTexture(gfxDevice, method);
         }
 
 
@@ -154,7 +155,8 @@ public class Texture : IDisposable
         if (deviceTexture is null)
             return;
 
-        throw new NotImplementedException();
+        data.RecalculateMipMaps();
+        deviceTexture = data.ChangeDeviceTexture(gd, deviceTexture, CreationMethod);
     }
 
     internal void DisposeInternal()
@@ -164,7 +166,7 @@ public class Texture : IDisposable
 
         Log<Texture>.Debug("Disposing {Obj}", assetId);
         deviceTexture?.Dispose();
-        
+        data?.Dispose();
         isDisposed = true;
     }
 
@@ -177,140 +179,95 @@ public class Texture : IDisposable
     }
 }
 
-internal class TextureData
+/// <summary>
+/// basically a reimplementing of veldrid  image sharp texture
+/// to use the newest version of image sharp to fix a problem with the image not being contigous in memory
+/// </summary>
+internal class TextureData2D : IDisposable
 {
     static readonly SixLabors.ImageSharp.Configuration loadConfig;
-    static TextureData()
+    static TextureData2D()
     {
         var config = Configuration.Default.Clone();
         config.PreferContiguousImageBuffers = true;
         loadConfig = config;
     }
 
-
     public PixelFormat Format { get; init; }
-    public TextureType Type { get; init; }
+    public int Width => data[0].Width;
+    public int Height => data[0].Height;
+    public int MipLevels => data.Length;
+    internal Image<Rgba32>[] data;
+    bool isDisposed = false;
 
-    public int Width { get; private set; }
-    public int Height { get; private set; }
-    public int Depth { get; private set; }
-    public int MipLevels { get; private set; }
 
-    public int ArrayLayers { get; private set; }
-
-    public Rgba32[] Data { get; private set; }
-
-    public TextureData(PixelFormat format, TextureType type, int width, int height, int depth, int mipLevels, int arrayLayers, Rgba32[] bytes)
-    {
-        Format = format;
-        Type = type;
-        Width = width;
-        Height = height;
-        Depth = depth;
-        MipLevels = mipLevels;
-        Debug.Assert(MipLevels > 0, "Min mip level 1");
-        ArrayLayers = arrayLayers;
-        Data = bytes;
-    }
-
-#pragma warning disable CS8618 //load sets all values
-    public TextureData(string path, bool mipmap = true, bool srgb=false) 
+    public TextureData2D(string path, bool mipmap = true, bool srgb=false) 
     {
         Format = srgb ?  PixelFormat.R8_G8_B8_A8_UNorm_SRgb:  PixelFormat.R8_G8_B8_A8_UNorm;
-        Type = TextureType.Texture2D;
-
-         Load(Image.Load<Rgba32>(loadConfig, path), mipmap);
-
+        data = Load(Image.Load<Rgba32>(loadConfig, path), mipmap);
     }
 
-
-    public TextureData(Stream stream, bool mipmap=true, bool srgb=false)
+    public TextureData2D(Stream stream, bool mipmap=true, bool srgb=false)
     {
         Format = srgb ? PixelFormat.R8_G8_B8_A8_UNorm_SRgb : PixelFormat.R8_G8_B8_A8_UNorm;
-        Type = TextureType.Texture2D;
-        Load(Image.Load<Rgba32>(loadConfig, stream), mipmap);
+        data = Load(Image.Load<Rgba32>(loadConfig, stream), mipmap);
     }
-# pragma warning restore
 
-    private void Load(Image<Rgba32> image, bool mipmap)
+    private Image<Rgba32>[] Load(Image<Rgba32> image, bool mipmap)
     {
         if (mipmap)
-            Log<TextureData>.Information("Mipmapping not supported yet");
-
-        Width = image.Width;
-        Height = image.Height;
-        Depth = 1;
-        ArrayLayers = 1;
-        MipLevels = 1;
-
-        Data = new Rgba32[Width * Height];
-
-
-        int c = 0;
-        for (int i = 0; i < Height; i++)
-        {       
-            for (int j = 0; j < Width; j++)
-            {
-                var item = image[j,i];
-                if (item.R == 0 && item.G == 0 && item.B == 0 && item.A == 0)
-                    c++;
-            }
+        {
+            return MipmapHelper.GenerateMipmaps(image);
         }
-
-
-        if (!image.DangerousTryGetSinglePixelMemory(out var span))
-            throw new NonContigousPixelMemoryException();
-        Log.Debug("Empty Count {Count} out of {Length}", c, span.Length);
-
-        Debug.Assert(span.Length == Data.Length, "Data and pixel span need to be of same size");
-        //image.CopyPixelDataTo(Data.AsSpan());
-
-
-        span.CopyTo(Data.AsMemory());
+         return new Image<Rgba32>[] { image };     
     }
 
-    public Veldrid.Texture CreateDeviceTexture(GraphicsDevice gfxDevice, TextureUsage usage, DeviceTextureCreation method) 
+    public Veldrid.Texture CreateDeviceTexture(GraphicsDevice gfxDevice, DeviceTextureCreation method) 
         => method switch {
             DeviceTextureCreation.Staging =>
-                ViaStaging(gfxDevice, usage),
+                ViaStaging(gfxDevice),
             DeviceTextureCreation.Update =>
-                ViaUpdate(gfxDevice, usage),
+                ViaUpdate(gfxDevice),
             _ => throw new InvalidOperationException() };
-    
 
-     unsafe Veldrid.Texture ViaStaging(GraphicsDevice gfxDevice, TextureUsage usage) 
+    public Veldrid.Texture ChangeDeviceTexture(GraphicsDevice gfxDevice, Veldrid.Texture texture, DeviceTextureCreation method)
+        => method switch {
+            DeviceTextureCreation.Staging =>
+                ViaStaging(gfxDevice,texture),
+            DeviceTextureCreation.Update =>
+                ViaUpdate(gfxDevice,texture),
+            _ => throw new InvalidOperationException() };
+
+
+    unsafe Veldrid.Texture ViaStaging(GraphicsDevice gfxDevice) 
+        => ViaStaging(gfxDevice, gfxDevice.ResourceFactory.CreateTexture(TextureDescription.Texture2D((uint)Width, (uint)Height, (uint)MipLevels, arrayLayers: 1u, Format, TextureUsage.Sampled)));
+        
+    unsafe Veldrid.Texture ViaStaging(GraphicsDevice gfxDevice, Veldrid.Texture texture)
     {
         var resourceFactory = gfxDevice.ResourceFactory;
-        var texture = resourceFactory.CreateTexture(new TextureDescription((uint)Width, (uint)Height, (uint)Depth, (uint)MipLevels, (uint)ArrayLayers, Format, usage, Type));
+        var staging = resourceFactory.CreateTexture(TextureDescription.Texture2D(texture.Width, texture.Height, texture.MipLevels, arrayLayers: 1u, Format, TextureUsage.Staging));
 
-        var staging = resourceFactory.CreateTexture(new((uint)Width, (uint)Height, (uint)Depth, (uint)MipLevels, (uint)ArrayLayers,Format,TextureUsage.Staging, Type));
+        uint width = 0;
+        uint height = 0;
+        var memory = default(Memory<Rgba32>);
 
-        ulong dataOffset = 0;
-
-        var span = Data.AsSpan();
-        var byteSpan = MemoryMarshal.Cast<Rgba32,byte>(span);
-
-        var uWidth = (uint)Width;
-        var uHeight = (uint)Height;
-        var uDepth = (uint)Depth;
-
-        fixed (byte* dataPtr = &MemoryMarshal.GetReference(byteSpan)) 
+        for (uint currentLevel = 0; currentLevel < MipLevels; currentLevel++)
         {
-            for (uint currentLevel = 0; currentLevel < MipLevels; currentLevel++)
-            {
-                var lWidth = GetDim(uWidth, currentLevel);
-                var lHeight = GetDim(uHeight, currentLevel);
-                var lDepth = GetDim(uDepth, currentLevel);
-                var size = lWidth*lHeight*lDepth * FormatSizeInBytes(Format);
+            var image = data[currentLevel];
+            width = (uint)image.Width;
+            height = (uint)image.Height;
+            var size = width * height * FormatSizeInBytes(Format);
 
-                for (uint layer = 0; layer < ArrayLayers; layer ++)
-                {
-                    gfxDevice.UpdateTexture(staging, (IntPtr)(dataPtr + dataOffset), size, 0, 0, 0, lWidth, lHeight, lDepth, currentLevel, layer);
-                    dataOffset += size;
-                }
+            if (!image.DangerousTryGetSinglePixelMemory(out memory))
+                throw new NonContigousPixelMemoryException();
+
+            fixed (Rgba32* ptr = &MemoryMarshal.GetReference(memory.Span))
+            {
+                void* dataPtr = ptr;
+                gfxDevice.UpdateTexture(staging, (IntPtr)(dataPtr), size, 0, 0, 0, width, height, depth: 1u, mipLevel: currentLevel, arrayLayer: 0u);
             }
         }
-
+        data[0].Dispose();
         var cl = resourceFactory.CreateCommandList();
         cl.Begin();
         cl.CopyTexture(staging, texture);
@@ -319,10 +276,35 @@ internal class TextureData
 
         return texture;
     }
-    unsafe Veldrid.Texture ViaUpdate(GraphicsDevice gfxDevice, TextureUsage usage) 
+
+    Veldrid.Texture ViaUpdate(GraphicsDevice gfxDevice) 
+        => ViaUpdate(gfxDevice,gfxDevice.ResourceFactory.CreateTexture(TextureDescription.Texture2D((uint)Width, (uint)Height, (uint)MipLevels, arrayLayers: 1u, Format, TextureUsage.Sampled)));
+
+    unsafe Veldrid.Texture ViaUpdate(GraphicsDevice gfxDevice, Veldrid.Texture texture)
     {
-        throw new NotImplementedException();
+        var memory = default(Memory<Rgba32>);
+        uint width = 0;
+        uint height = 0;
+        for (int i = 0; i < MipLevels; i++)
+        {
+            Image<Rgba32> image = data[i];
+            width = (uint)image.Width;
+            height = (uint)image.Height;
+            var size = width * height * FormatSizeInBytes(Format);
+
+            if (!image.DangerousTryGetSinglePixelMemory(out memory))
+                throw new NonContigousPixelMemoryException();
+
+            fixed (Rgba32* ptr = &MemoryMarshal.GetReference(memory.Span))
+            {
+                void* dataPtr = ptr;
+                gfxDevice.UpdateTexture(texture, (IntPtr)dataPtr, size, 0u, 0u, 0u, width, height, depth: 1u, mipLevel: (uint)i, arrayLayer: 0u);
+            }
+        }
+
+        return texture;
     }
+
     public void SetPixel(float u, float v, Rgba32 rgba)
     {
         u = Mathf.Clamp01(u);
@@ -331,7 +313,7 @@ internal class TextureData
         var x = (int)(u * Width);
         var y = (int)(v * Height);
 
-        Data[Indexing.TwoDimToOneDim(x,y,(int)Width)] = rgba;
+        data[0][x,y] = rgba;
     }
 
     public void SetPixel(float u, float v, byte r, byte g, byte b, byte a = byte.MaxValue)
@@ -349,7 +331,7 @@ internal class TextureData
 
     public void SetPixel(int x, int y, Rgba32 rgba)
     {
-        Data[Indexing.TwoDimToOneDim(x, y, (int)Width)] = rgba;
+        data[0][x,y] = rgba;
     }
 
     public void SetPixel(int x, int y, byte r, byte g, byte b, byte a = byte.MaxValue)
@@ -370,7 +352,10 @@ internal class TextureData
     {
         var idx = Indexing.TwoDimToOneDim(x,y,(int)Width);
 
-        pixels.CopyTo(Data.AsSpan()[idx..]);
+        if (!data[0].DangerousTryGetSinglePixelMemory(out var memory))
+            throw new NonContigousPixelMemoryException();
+
+        pixels.CopyTo(memory.Span[idx..]);
 
     }
 
@@ -381,17 +366,14 @@ internal class TextureData
     public void SetPixels(Span<byte> pixels, int x = 0, int y = 0)
         => SetPixels(MemoryMarshal.Cast<byte, Rgba32>(pixels), x, y);
 
-
-    static uint GetDim(uint largestDim, uint mipLevel)
+    public void Dispose()
     {
-        uint ret = largestDim;
+        if (isDisposed)
+            return;
 
-        //ret = ret >>> (mipLevel - 1);
-        for (int i = 0; i < mipLevel; i++)
-        {
-            ret /= 2;
-        }
-        return Math.Max(1u, ret);
+        foreach (var image in data)
+            image.Dispose();
+        isDisposed = true;
     }
     static uint FormatSizeInBytes(PixelFormat format)
     {
@@ -642,5 +624,11 @@ internal class TextureData
 
     }
 
-
+    internal void RecalculateMipMaps()
+    {
+        if (MipLevels > 1) 
+        {
+            data = MipmapHelper.GenerateMipmaps(data[0]);
+        }
+    }
 }
