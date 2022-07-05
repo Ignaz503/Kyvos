@@ -40,7 +40,7 @@ internal class SoundLoader : ISoundLoader, IDisposable
     }
 
     public SoundAsset Load(AssetIdentifier id)
-        => assetsLoaded.GetOrAdd(id, (ide) => new SoundAsset(ide, assetDatabase.GetPathToAsset(ide)));
+        => assetsLoaded.GetOrAdd(id, (ide) => new SoundAsset(ide, assetDatabase.GetAssetLocation(ide).First));
 
 
     void OnNoRefrenceRemaining(AssetIdentifier id) 

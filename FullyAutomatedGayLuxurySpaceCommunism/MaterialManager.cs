@@ -158,7 +158,7 @@ void main()
                     new Material.PropertySetDescription(
                         type: Material.PropertySet.Ownership.PerMaterial,
                         setIdx: 1,
-                        new Material.TexturePropertyDescription()
+                        new Material.Texture2DPropertyDescription()
                         {
                             Name="SurfaceTexture",
                             Order = 0,

@@ -14,7 +14,7 @@ public class Image : UILeafNode
     readonly IntPtr binding;
     ImGuiHandle handle;
 
-    readonly Texture image;
+    readonly TextureHandle<TextureData2D> image;
     readonly Veldrid.TextureView view;
 
     Vector2 size;
@@ -25,7 +25,7 @@ public class Image : UILeafNode
     public Vector4 TintColor { get; set; }
     public Vector4 BorderColor { get; set; }
 
-    public Image(ImGuiHandle handle, Texture texture, Vector2? size = null)
+    public Image(ImGuiHandle handle, TextureHandle<TextureData2D> texture, Vector2? size = null)
     {
         this.handle = handle;
         this.image = texture;
@@ -47,7 +47,7 @@ public class Image : UILeafNode
     public Image(AssetIdentifier id, ImGuiHandle handle, Vector2? size = null)
     {
         this.handle = handle;
-        this.image = GetComponent<TextureLoader>(handle.Application).Load(id,false);
+        this.image = GetComponent<ITextureLoader>(handle.Application).Load<TextureData2D>(id,false);
 
         if (size.HasValue)
             this.size = size.Value;

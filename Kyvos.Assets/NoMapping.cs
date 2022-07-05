@@ -7,10 +7,8 @@ internal class NoMapping : IAssetMapping
     private NoMapping()
     {}
 
-    public string GetPath(AssetIdentifier identifier)
-        => throw new InvalidOperationException($"{nameof(AssetDatabase)} has not been initialized");
 
-    public ReadOnlySpan<char> GetPathSpan(AssetIdentifier id)
+    AssetLocation IAssetMapping.GetAssetLocation(AssetIdentifier id)
         => throw new InvalidOperationException($"{nameof(AssetDatabase)} has not been initialized");
 }
 

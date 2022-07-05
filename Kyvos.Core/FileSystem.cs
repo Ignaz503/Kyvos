@@ -17,10 +17,12 @@ public static class FileSystem
         public const string AssetsFolderName = "Assets";
     }
 
-    public static string AppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+    private static readonly string appData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+    public static string AppData => appData;
     public static string InstallLocation => AppDomain.CurrentDomain.BaseDirectory;
 
-    public static string Assets = System.IO.Path.Combine(InstallLocation, Constants.AssetsFolderName);
+    private static readonly string assets = System.IO.Path.Combine(InstallLocation, Constants.AssetsFolderName);
+    public static string Assets => assets;
 
     public static string MakeAbsolute(string localPath, StorageLocation location = StorageLocation.Assets)
         => System.IO.Path.Combine(GetPathFromLocation(location), localPath);

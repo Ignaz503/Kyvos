@@ -5,21 +5,22 @@ namespace Kyvos.Graphics.Materials;
 
 public partial class Material
 {
-    public class TextureProperty : Property
+    public class TextureProperty<T> : Property
+        where T : TextureData
     {
-        Texture texture;
+        TextureHandle<T> texture;
         TextureView textureView;
 
         internal override BindableResource Bindable => textureView;
 
-        internal TextureProperty(Texture texture,int order, GraphicsDevice gfxDevice)
+        internal TextureProperty(TextureHandle<T> texture,int order, GraphicsDevice gfxDevice)
             : base(order)
         {
             this.texture = texture;
             this.textureView = texture.GetTextureView(gfxDevice);
         }
 
-        public void Update(Texture texture, GraphicsDevice gfxDevice) 
+        public void Update(TextureHandle<T> texture, GraphicsDevice gfxDevice)
         {
             this.texture.Dispose();
             this.textureView.Dispose();

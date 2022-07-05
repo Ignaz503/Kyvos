@@ -17,7 +17,7 @@ public class MaterialLoader : IDisposable
 
     AssetDatabase assetDB;
     GraphicsDeviceHandle gfxDeviceHandle;
-    TextureLoader texLoader;
+    ITextureLoader texLoader;
 
     public MaterialLoader(IApplication app) 
     {
@@ -26,7 +26,7 @@ public class MaterialLoader : IDisposable
 
         assetDB = GetComponentFromApp<AssetDatabase>(app);
         gfxDeviceHandle = GetComponentFromApp<GraphicsDeviceHandle>(app);
-        texLoader = GetComponentFromApp<TextureLoader>(app);
+        texLoader = GetComponentFromApp<ITextureLoader>(app);
     }
 
     T GetComponentFromApp<T>(IApplication app) 

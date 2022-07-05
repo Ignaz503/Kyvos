@@ -2,6 +2,7 @@
 using Kyvos.Core.Configuration;
 using Kyvos.Core.Logging;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace Kyvos.Assets;
 
@@ -9,7 +10,7 @@ public class DictionaryAssetMapping : IAssetMapping
 {
 
 
-    private readonly Dictionary<AssetIdentifier, string> _assetMapping;
+    private readonly Dictionary<AssetIdentifier, AssetLocation> _assetMapping;
 
     public DictionaryAssetMapping(IApplication application)
     {
@@ -22,16 +23,16 @@ public class DictionaryAssetMapping : IAssetMapping
         {
             Log<DictionaryAssetMapping>.Error("No asset database file specified - using empty database");
             _assetMapping =
-                new Dictionary<AssetIdentifier, string>();
+                new Dictionary<AssetIdentifier, AssetLocation>();
             return;
         }
         _assetMapping = LoadFromFile(FileSystem.MakeAbsolute(dbFile, FileSystem.StorageLocation.InstallFolder));
     }
 
-    private static Dictionary<AssetIdentifier, string> LoadFromFile(string path)
+    private static Dictionary<AssetIdentifier, AssetLocation> LoadFromFile(string path)
     {
         using StreamReader r = new(File.OpenRead(path));
-        var dict = new Dictionary<AssetIdentifier, string>();
+        var dict = new Dictionary<AssetIdentifier, AssetLocation>();
 
         var i = 0;
         while (!r.EndOfStream)
@@ -51,7 +52,20 @@ public class DictionaryAssetMapping : IAssetMapping
             }
 
             var id = new AssetIdentifier(parts[0]);
-            dict.Add(id, parts[1]);
+
+            if (parts[1][0] == '[')//we have multiple files
+            {
+                var allEntries = new string(parts[1].AsSpan()[1..^1]).Trim();
+
+                var split = allEntries.Split(',',StringSplitOptions.TrimEntries);
+                dict.Add(id, new(FileSystem.Assets, split));
+            }
+            else 
+            {
+                dict.Add(id, new(parts[1], FileSystem.Assets));
+            }
+
+            //dict.Add(id, parts[1]);
 
             i++;
         }
@@ -59,22 +73,15 @@ public class DictionaryAssetMapping : IAssetMapping
         return dict;
     }
 
-    public string GetPath(AssetIdentifier id)
+    public AssetLocation GetAssetLocation(AssetIdentifier id)
     {
         if (_assetMapping.TryGetValue(id, out var path))
         {
             return path;
         }
-        return string.Empty;
+        return new(); 
     }
-    public ReadOnlySpan<char> GetPathSpan(AssetIdentifier id)
-    {
-        if (_assetMapping.TryGetValue(id, out var path))
-        {
-            return path;
-        }
-        return string.Empty;
-    }
+
 }
 
 

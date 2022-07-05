@@ -26,7 +26,7 @@ public partial class Material
     public readonly struct CreationContext 
     {
         public GraphicsDevice GfxDevice { get; init; }
-        public TextureLoader TextureLoader { get; init; }
+        public ITextureLoader TextureLoader { get; init; }
 
     }
 }

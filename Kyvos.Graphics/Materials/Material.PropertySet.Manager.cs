@@ -68,7 +68,8 @@ public partial class Material
                 GetSet(idx).Update(propertyName, ref Data, gfxDevie, byteOffset);
             }
 
-            public static void Update(uint idx, string propertyName, Texture texture, GraphicsDevice gfxDevice)
+            public static void Update<T>(uint idx, string propertyName, TextureHandle<T> texture, GraphicsDevice gfxDevice)
+                where T  : TextureData
             {
                 GetSet(idx).Update(propertyName, texture, gfxDevice);
             }
@@ -96,7 +97,8 @@ public partial class Material
                 FindSetForProperty(propertyName).Update(propertyName, ref Data, gfxDevie, byteOffset);
             }
 
-            public static void Update(string propertyName, Texture texture, GraphicsDevice gfxDevice)
+            public static void Update<T>(string propertyName, TextureHandle<T> texture, GraphicsDevice gfxDevice)
+                where T: TextureData
             {
                 FindSetForProperty(propertyName).Update(propertyName, texture, gfxDevice);
             }

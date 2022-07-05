@@ -38,15 +38,9 @@ public class AssetDatabase
      *        user here is your handle
      *      . handle has wait for function that just busy waits if necessary for user
      */
-    public string GetPathToAsset(AssetIdentifier identifier)
-    {
-        var path = mapping.GetPath(identifier);
+    public AssetLocation GetAssetLocation(AssetIdentifier identifier)
+        => mapping.GetAssetLocation(identifier);
 
-        if (string.IsNullOrEmpty(path))
-            return path;
-        
-        return System.IO.Path.Combine(FileSystem.Assets, path);
-    }
 
     //internal void RegisterAssetStorage<T>(AssetStorage<T> assetStorage)
     //{

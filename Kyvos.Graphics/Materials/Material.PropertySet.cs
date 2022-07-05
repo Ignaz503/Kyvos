@@ -82,9 +82,10 @@ public partial class Material
             property.Update(ref data, graphicsDevice, byteOffset);
         }
 
-        public void Update(string propertyName, Texture texture, GraphicsDevice gfxDevice) 
+        public void Update<T>(string propertyName, TextureHandle<T> texture, GraphicsDevice gfxDevice)
+            where T : TextureData
         {
-            var property = GetProperty<TextureProperty>(propertyName);
+            var property = GetProperty<TextureProperty<T>>(propertyName);
             property.Update(texture, gfxDevice);
             BuildResourceSet(gfxDevice);
         }

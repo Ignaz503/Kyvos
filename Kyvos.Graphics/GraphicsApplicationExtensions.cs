@@ -14,7 +14,7 @@ public static class GraphicsApplicationExtensions
 
     public static IModifyableApplication WithTextureHandling(this IModifyableApplication application)
     {
-        application.EnsureExistence((app)=>new TextureLoader(application));
+        application.EnsureExistence<ITextureLoader>((app)=>new TextureLoader(application));
         return application;
     }
 
