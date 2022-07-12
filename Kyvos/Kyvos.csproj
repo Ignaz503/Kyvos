@@ -50,6 +50,7 @@
     <ProjectReference Include="..\Kyvos.Networking\Kyvos.Networking.csproj" />
     <ProjectReference Include="..\Kyvos.Utility\Kyvos.Utility.csproj" />
     <ProjectReference Include="..\Kyvos.Veldrid\Kyvos.VeldridIntegration.csproj" />
+    <ProjectReference Include="..\Kyvos.WaveFunctionCollapse\Kyvos.WaveFunctionCollapse.csproj" />
   </ItemGroup>
 
 </Project>

@@ -4,8 +4,18 @@ using System.Diagnostics;
 using System.Collections.Concurrent;
 using Kyvos.Core.Logging;
 using SixLabors.ImageSharp.PixelFormats;
+using System.Numerics;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Kyvos.Graphics;
+
+
+
+public class UndefinedEnumValue<T> : Exception 
+{
+    public UndefinedEnumValue(T val) : base($"{val} is not defined") 
+    {}
+}
 
 public class TextureLoader : ITextureLoader, IDisposable
 {
